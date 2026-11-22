@@ -1,0 +1,86 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://src/gameplay/player.gd" id="1_player"]
+[ext_resource type="Script" path="res://src/gameplay/camera_rig.gd" id="2_camera"]
+[ext_resource type="Script" path="res://src/ui/hud.gd" id="3_hud"]
+[ext_resource type="Script" path="res://src/ui/damage_numbers.gd" id="4_numbers"]
+[ext_resource type="Script" path="res://src/gameplay/enemy_spawner.gd" id="5_spawner"]
+[ext_resource type="PackedScene" path="res://scenes/npc/upgrade_npc.tscn" id="6_upgrade_npc"]
+[ext_resource type="Script" path="res://src/gameplay/map_environment.gd" id="7_map_environment"]
+[ext_resource type="Script" path="res://src/gameplay/map_layout.gd" id="8_map_layout"]
+
+[sub_resource type="Environment" id="Environment_main"]
+background_mode = 1
+background_color = Color(0.07, 0.08, 0.1, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.62, 0.64, 0.72, 1)
+ambient_light_energy = 0.55
+tonemap_mode = 2
+
+[sub_resource type="CapsuleMesh" id="Mesh_player"]
+radius = 0.42
+height = 1.7
+
+[sub_resource type="StandardMaterial3D" id="Mat_player"]
+albedo_color = Color(0.24, 0.55, 0.95, 1)
+roughness = 0.6
+
+[sub_resource type="CapsuleShape3D" id="Shape_player"]
+radius = 0.42
+height = 1.7
+
+[node name="Main" type="Node3D"]
+script = ExtResource("7_map_environment")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." groups=["world_env"]]
+environment = SubResource("Environment_main")
+
+[node name="Sun" type="DirectionalLight3D" parent="." groups=["sun"]]
+rotation = Vector3(-0.9, -0.7, 0)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="MapLayout" type="Node3D" parent="."]
+script = ExtResource("8_map_layout")
+
+[node name="Player" type="CharacterBody3D" parent="." groups=["player"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39, 0.9, -39)
+script = ExtResource("1_player")
+
+[node name="Collision" type="CollisionShape3D" parent="Player"]
+shape = SubResource("Shape_player")
+
+[node name="Mesh" type="MeshInstance3D" parent="Player"]
+mesh = SubResource("Mesh_player")
+material_override = SubResource("Mat_player")
+
+[node name="CameraRig" type="Node3D" parent="."]
+rotation = Vector3(-0.785398, 0.785398, 0)
+script = ExtResource("2_camera")
+target_path = NodePath("../Player")
+
+[node name="Camera3D" type="Camera3D" parent="CameraRig"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
+projection = 1
+size = 9.0
+
+[node name="HUD" type="CanvasLayer" parent="."]
+layer = 30
+
+[node name="Root" type="Control" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_hud")
+
+[node name="DamageNumbers" type="CanvasLayer" parent="."]
+layer = 20
+script = ExtResource("4_numbers")
+
+[node name="Spawner" type="Node3D" parent="."]
+script = ExtResource("5_spawner")
+
+[node name="UpgradeNpc" parent="." instance=ExtResource("6_upgrade_npc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36, 0, -35)

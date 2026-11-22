@@ -1,0 +1,227 @@
+name: iOS Unsigned Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  GODOT_VERSION: "4.7.2"
+  GODOT_RELEASE: "4.7.2-stable"
+  GODOT_TEMPLATE_VERSION: "4.7.2.stable"
+  GODOT_EDITOR_URL: "https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_macos.universal.zip"
+  GODOT_TEMPLATES_URL: "https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz"
+
+jobs:
+  build:
+    name: Unsigned IPA
+    runs-on: macos-14
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Preflight
+        run: |
+          set -euo pipefail
+          if [ ! -f project.godot ]; then
+            echo "::error file=project.godot::project.godot not found. The Godot project skeleton must exist before building."
+            exit 1
+          fi
+          if [ ! -f export_presets.cfg ]; then
+            echo "::error file=export_presets.cfg::No export_presets.cfg. Add an iOS export preset named \"iOS\" (see docs/BUILD.md)."
+            exit 1
+          fi
+
+      - name: Install Godot 4.7.2
+        run: |
+          set -euo pipefail
+          GODOT_HOME="$RUNNER_TEMP/godot"
+          mkdir -p "$GODOT_HOME"
+          curl -fL --retry 3 --retry-delay 5 -o "$GODOT_HOME/godot.zip" "$GODOT_EDITOR_URL"
+          unzip -q "$GODOT_HOME/godot.zip" -d "$GODOT_HOME"
+          if [ ! -d "$GODOT_HOME/Godot.app" ]; then
+            echo "::error::Godot.app was not found in the downloaded editor archive."
+            exit 1
+          fi
+          chmod +x "$GODOT_HOME/Godot.app/Contents/MacOS/Godot"
+          xattr -dr com.apple.quarantine "$GODOT_HOME/Godot.app" || true
+          echo "$GODOT_HOME/Godot.app/Contents/MacOS" >> "$GITHUB_PATH"
+
+      - name: Install Godot 4.7.2 export templates
+        run: |
+          set -euo pipefail
+          TEMPLATE_DIR="$HOME/Library/Application Support/Godot/export_templates/$GODOT_TEMPLATE_VERSION"
+          rm -rf "$TEMPLATE_DIR"
+          mkdir -p "$TEMPLATE_DIR"
+          curl -fL --retry 3 --retry-delay 5 -o "$RUNNER_TEMP/templates.tpz" "$GODOT_TEMPLATES_URL"
+          rm -rf "$RUNNER_TEMP/templates"
+          mkdir -p "$RUNNER_TEMP/templates"
+          unzip -q "$RUNNER_TEMP/templates.tpz" -d "$RUNNER_TEMP/templates"
+          if [ -d "$RUNNER_TEMP/templates/templates" ]; then
+            cp -R "$RUNNER_TEMP/templates/templates/." "$TEMPLATE_DIR/"
+          else
+            cp -R "$RUNNER_TEMP/templates/." "$TEMPLATE_DIR/"
+          fi
+          if [ ! -f "$TEMPLATE_DIR/ios.zip" ]; then
+            echo "::error::ios.zip is missing from the export templates."
+            exit 1
+          fi
+          GODOT_VERSION_OUTPUT="$(godot --version)"
+          echo "$GODOT_VERSION_OUTPUT"
+          case "$GODOT_VERSION_OUTPUT" in
+            4.7.2.stable*) ;;
+            *)
+              echo "::error::Expected Godot 4.7.2.stable, got: $GODOT_VERSION_OUTPUT"
+              exit 1
+              ;;
+          esac
+
+      - name: Configure Xcode-project-only export
+        run: |
+          set -euo pipefail
+          python3 tools/ci_prepare_ios_preset.py --config export_presets.cfg --preset-name iOS
+
+      - name: Import project
+        run: |
+          set -euo pipefail
+          godot --headless --path . --import
+
+      - name: Export Xcode project
+        run: |
+          set -euo pipefail
+          mkdir -p build/ios
+          godot --headless --path . --export-release "iOS" "build/ios/Game.ipa"
+          if [ ! -d build/ios/Game.xcodeproj ]; then
+            echo "::error::Godot did not generate build/ios/Game.xcodeproj."
+            echo "Check that the \"iOS\" preset has export_project_only=true and that the export path base name is Game."
+            exit 1
+          fi
+
+      - name: Build .app with xcodebuild
+        run: |
+          set -euo pipefail
+          xcodebuild -version
+
+          SCHEME="$(xcodebuild -project build/ios/Game.xcodeproj -list 2>/dev/null \
+            | awk '/^[[:space:]]*Schemes:/{getline; gsub(/^[[:space:]]+|[[:space:]]+$/, "", $0); print $0; exit}')"
+          SCHEME="${SCHEME:-Game}"
+          echo "Using scheme: $SCHEME"
+
+          xcodebuild \
+            -project build/ios/Game.xcodeproj \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build/ios/derived \
+            ARCHS=arm64 \
+            ONLY_ACTIVE_ARCH=NO \
+            IPHONEOS_DEPLOYMENT_TARGET=14.0 \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            EXPANDED_CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM="" \
+            PROVISIONING_PROFILE_SPECIFIER="" \
+            build
+
+          APP="$(find build/ios/derived/Build/Products/Release-iphoneos -maxdepth 1 -name '*.app' -type d | head -n 1)"
+          if [ -z "$APP" ]; then
+            echo "::error::No .app was produced by xcodebuild."
+            exit 1
+          fi
+          echo "APP_PATH=$APP" >> "$GITHUB_ENV"
+          echo "Built: $APP"
+
+      - name: Ad-hoc sign main executable
+        run: |
+          set -euo pipefail
+          if ! command -v ldid >/dev/null 2>&1; then
+            HOMEBREW_NO_AUTO_UPDATE=1 brew install ldid
+          fi
+
+          APP="$APP_PATH"
+          EXEC_NAME="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$APP/Info.plist")"
+          EXECUTABLE="$APP/$EXEC_NAME"
+          if [ ! -f "$EXECUTABLE" ]; then
+            echo "::error::Main executable not found: $EXECUTABLE"
+            exit 1
+          fi
+
+          ldid -S "$EXECUTABLE"
+          echo "Applied ad-hoc signature to $EXECUTABLE"
+          codesign -dv --verbose=2 "$EXECUTABLE" 2>&1 | sed -n '1,12p' || true
+
+      - name: Verify app bundle
+        run: |
+          set -euo pipefail
+          APP="$APP_PATH"
+          EXEC_NAME="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$APP/Info.plist")"
+          EXECUTABLE="$APP/$EXEC_NAME"
+
+          if [ ! -f "$APP/game.pck" ]; then
+            echo "::error::game.pck is missing from the exported .app."
+            exit 1
+          fi
+
+          ARCHS="$(lipo -archs "$EXECUTABLE")"
+          echo "Architectures: $ARCHS"
+          case " $ARCHS " in
+            *" arm64 "*) ;;
+            *)
+              echo "::error::The main executable does not contain arm64."
+              exit 1
+              ;;
+          esac
+
+          MIN_OS="$(/usr/libexec/PlistBuddy -c 'Print :MinimumOSVersion' "$APP/Info.plist" 2>/dev/null || true)"
+          echo "MinimumOSVersion: ${MIN_OS:-unknown}"
+          if [ -n "$MIN_OS" ] && [ "$MIN_OS" != "14.0" ]; then
+            echo "::warning::MinimumOSVersion is $MIN_OS, expected 14.0."
+          fi
+
+          ls -lh "$APP/game.pck" "$EXECUTABLE"
+
+      - name: Package Payload as IPA
+        run: |
+          set -euo pipefail
+          APP="$APP_PATH"
+          APP_NAME="$(basename "$APP")"
+          OUT="$PWD/build/ios/Game.ipa"
+
+          rm -rf build/ipa
+          mkdir -p build/ipa/Payload
+          ditto "$APP" "build/ipa/Payload/$APP_NAME"
+          rm -f "$OUT"
+          (
+            cd build/ipa
+            zip -qry "$OUT" Payload
+          )
+
+          if ! unzip -l "$OUT" | grep -q "Payload/$APP_NAME/game.pck"; then
+            echo "::error::Packaged IPA does not contain Payload/$APP_NAME/game.pck."
+            exit 1
+          fi
+          ls -lh "$OUT"
+
+      - name: Upload unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: TrollHunt-ios-unsigned
+          path: build/ios/Game.ipa
+          retention-days: 90
+          if-no-files-found: error

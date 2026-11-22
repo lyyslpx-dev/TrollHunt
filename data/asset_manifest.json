@@ -1,0 +1,370 @@
+{
+  "version": 1,
+  "characters": {
+    "CHR_WARRIOR_01": {
+      "model": "res://assets/models/chr/CHR_Warrior_01.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": [
+        "idle",
+        "run",
+        "attack1",
+        "attack2",
+        "attack3",
+        "hit",
+        "die"
+      ]
+    },
+    "CHR_MAGE_01": {
+      "model": "res://assets/models/chr/CHR_Mage_01.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": [
+        "idle",
+        "run",
+        "attack1",
+        "attack2",
+        "attack3",
+        "hit",
+        "die"
+      ]
+    },
+    "CHR_TAOIST_01": {
+      "model": "res://assets/models/chr/CHR_Taoist_01.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": [
+        "idle",
+        "run",
+        "attack1",
+        "attack2",
+        "attack3",
+        "hit",
+        "die"
+      ]
+    },
+    "CHR_NPC_UPGRADE_01": {
+      "model": "res://assets/models/chr/npc/CHR_Npc_Upgrade_01.glb",
+      "fallback": "sprite",
+      "height": 1.85,
+      "animations": []
+    },
+    "CHR_CUSTOM_MALE_01": {
+      "model": "res://assets/models/chr/custom/CHR_CUSTOM_MALE_01.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": []
+    }
+  },
+  "outfits": {
+    "CHR_WARRIOR_SET_01": {
+      "model": "res://assets/models/chr/outfits/CHR_Warrior_Set_01.glb",
+      "base": "CHR_WARRIOR_01",
+      "name": "新兵皮甲",
+      "level_min": 1,
+      "level_max": 12
+    },
+    "CHR_WARRIOR_SET_02": {
+      "model": "res://assets/models/chr/outfits/CHR_Warrior_Set_02.glb",
+      "base": "CHR_WARRIOR_01",
+      "name": "精铁战甲",
+      "level_min": 13,
+      "level_max": 24
+    },
+    "CHR_WARRIOR_SET_03": {
+      "model": "res://assets/models/chr/outfits/CHR_Warrior_Set_03.glb",
+      "base": "CHR_WARRIOR_01",
+      "name": "赤金重铠",
+      "level_min": 25,
+      "level_max": 36
+    },
+    "CHR_WARRIOR_SET_04": {
+      "model": "res://assets/models/chr/outfits/CHR_Warrior_Set_04.glb",
+      "base": "CHR_WARRIOR_01",
+      "name": "龙鳞血铠",
+      "level_min": 37,
+      "level_max": 48
+    },
+    "CHR_WARRIOR_SET_05": {
+      "model": "res://assets/models/chr/outfits/CHR_Warrior_Set_05.glb",
+      "base": "CHR_WARRIOR_01",
+      "name": "天命炎铠",
+      "level_min": 49,
+      "level_max": 60
+    },
+    "CHR_MAGE_SET_01": {
+      "model": "res://assets/models/chr/outfits/CHR_Mage_Set_01.glb",
+      "base": "CHR_MAGE_01",
+      "name": "学徒法袍",
+      "level_min": 1,
+      "level_max": 12
+    },
+    "CHR_MAGE_SET_02": {
+      "model": "res://assets/models/chr/outfits/CHR_Mage_Set_02.glb",
+      "base": "CHR_MAGE_01",
+      "name": "秘银星袍",
+      "level_min": 13,
+      "level_max": 24
+    },
+    "CHR_MAGE_SET_03": {
+      "model": "res://assets/models/chr/outfits/CHR_Mage_Set_03.glb",
+      "base": "CHR_MAGE_01",
+      "name": "星辉法衣",
+      "level_min": 25,
+      "level_max": 36
+    },
+    "CHR_MAGE_SET_04": {
+      "model": "res://assets/models/chr/outfits/CHR_Mage_Set_04.glb",
+      "base": "CHR_MAGE_01",
+      "name": "天穹星袍",
+      "level_min": 37,
+      "level_max": 48
+    },
+    "CHR_MAGE_SET_05": {
+      "model": "res://assets/models/chr/outfits/CHR_Mage_Set_05.glb",
+      "base": "CHR_MAGE_01",
+      "name": "天命星冠",
+      "level_min": 49,
+      "level_max": 60
+    },
+    "CHR_TAOIST_SET_01": {
+      "model": "res://assets/models/chr/outfits/CHR_Taoist_Set_01.glb",
+      "base": "CHR_TAOIST_01",
+      "name": "白木道袍",
+      "level_min": 1,
+      "level_max": 12
+    },
+    "CHR_TAOIST_SET_02": {
+      "model": "res://assets/models/chr/outfits/CHR_Taoist_Set_02.glb",
+      "base": "CHR_TAOIST_01",
+      "name": "黄符云袍",
+      "level_min": 13,
+      "level_max": 24
+    },
+    "CHR_TAOIST_SET_03": {
+      "model": "res://assets/models/chr/outfits/CHR_Taoist_Set_03.glb",
+      "base": "CHR_TAOIST_01",
+      "name": "青玉灵袍",
+      "level_min": 25,
+      "level_max": 36
+    },
+    "CHR_TAOIST_SET_04": {
+      "model": "res://assets/models/chr/outfits/CHR_Taoist_Set_04.glb",
+      "base": "CHR_TAOIST_01",
+      "name": "太极金袍",
+      "level_min": 37,
+      "level_max": 48
+    },
+    "CHR_TAOIST_SET_05": {
+      "model": "res://assets/models/chr/outfits/CHR_Taoist_Set_05.glb",
+      "base": "CHR_TAOIST_01",
+      "name": "天命玄袍",
+      "level_min": 49,
+      "level_max": 60
+    }
+  },
+  "monsters": {
+    "MON_SANDRAT_01": {
+      "model": "res://assets/models/mon/MON_SANDRAT_01.glb",
+      "fallback": "capsule"
+    },
+    "MON_THINWOLF_01": {
+      "model": "res://assets/models/mon/MON_ThinWolf_01.glb",
+      "fallback": "capsule"
+    },
+    "MON_BOAR_01": {
+      "model": "res://assets/models/mon/MON_BOAR_01.glb",
+      "fallback": "capsule"
+    },
+    "MON_ARCHER_01": {
+      "model": "res://assets/models/mon/MON_Archer_01.glb",
+      "fallback": "capsule"
+    },
+    "MON_BOMB_BUG_01": {
+      "model": "res://assets/models/mon/MON_BombBug_01.glb",
+      "fallback": "sphere"
+    },
+    "MON_BULL_ELITE_01": {
+      "model": "res://assets/models/mon/MON_BullElite_01.glb",
+      "fallback": "capsule"
+    },
+    "BOSS_SANDWORM_01": {
+      "model": "res://assets/models/mon/BOSS_SANDWORM_01.glb",
+      "fallback": "capsule"
+    },
+    "BOSS_FROST_DRAGON_01": {
+      "model": "res://assets/models/mon/BOSS_FROST_DRAGON_01.glb",
+      "fallback": "capsule"
+    },
+    "MON_VINE_01": {
+      "model": "res://assets/models/mon/MON_VINE_01.glb",
+      "fallback": "capsule"
+    },
+    "MON_FIREIMP_01": {
+      "model": "res://assets/models/mon/MON_FIREIMP_01.glb",
+      "fallback": "capsule"
+    },
+    "MON_GHOST_01": {
+      "model": "res://assets/models/mon/MON_GHOST_01.glb",
+      "fallback": "capsule"
+    },
+    "MON_ICEWOLF_01": {
+      "model": "res://assets/models/mon/MON_ICEWOLF_01.glb",
+      "fallback": "capsule"
+    },
+    "MON_SHRIMP_01": {
+      "model": "res://assets/models/mon/MON_SHRIMP_01.glb",
+      "fallback": "capsule"
+    },
+    "MON_WINDSPIRIT_01": {
+      "model": "res://assets/models/mon/MON_WINDSPIRIT_01.glb",
+      "fallback": "capsule"
+    },
+    "MON_DEMON_01": {
+      "model": "res://assets/models/mon/MON_DEMON_01.glb",
+      "fallback": "capsule"
+    },
+    "BOSS_TREE_DEMON_01": {
+      "model": "res://assets/models/mon/BOSS_TREE_DEMON_01.glb",
+      "fallback": "capsule"
+    },
+    "BOSS_LAVA_DEMON_01": {
+      "model": "res://assets/models/mon/BOSS_LAVA_DEMON_01.glb",
+      "fallback": "capsule"
+    },
+    "BOSS_GHOST_KING_01": {
+      "model": "res://assets/models/mon/BOSS_GHOST_KING_01.glb",
+      "fallback": "capsule"
+    },
+    "BOSS_THUNDER_PENG_01": {
+      "model": "res://assets/models/mon/BOSS_THUNDER_PENG_01.glb",
+      "fallback": "capsule"
+    },
+    "BOSS_DRAGON_KING_01": {
+      "model": "res://assets/models/mon/BOSS_DRAGON_KING_01.glb",
+      "fallback": "capsule"
+    },
+    "BOSS_DEMON_EMPEROR_01": {
+      "model": "res://assets/models/mon/BOSS_DEMON_EMPEROR_01.glb",
+      "fallback": "capsule"
+    }
+  },
+  "environment": {
+    "ENV_ASHEN_TILE_A": {
+      "model": "res://assets/models/env/ENV_Ashen_Tile_A.glb",
+      "fallback": "plane"
+    },
+    "ENV_RUIN_TILE_A": {
+      "model": "res://assets/models/env/ENV_Ruin_Tile_A.glb",
+      "fallback": "plane"
+    },
+    "ENV_ARENA_TILE_A": {
+      "model": "res://assets/models/env/ENV_Arena_Tile_A.glb",
+      "fallback": "plane"
+    },
+    "ENV_CART_01": {
+      "model": "res://assets/models/env/ENV_CART_01.glb",
+      "fallback": "plane"
+    },
+    "ENV_HOUSE_01": {
+      "model": "res://assets/models/env/ENV_HOUSE_01.glb",
+      "fallback": "plane"
+    }
+  },
+  "ground_materials": {
+    "ENV_ASHEN_TILE_A": {
+      "texture": "res://assets/textures/env/ground/ENV_ASHEN_TILE_A.png",
+      "role": "combat_floor"
+    },
+    "ENV_ASHEN_TILE_B": {
+      "texture": "res://assets/textures/env/ground/ENV_ASHEN_TILE_B.png",
+      "role": "path"
+    },
+    "ENV_RUIN_TILE_A": {
+      "texture": "res://assets/textures/env/ground/ENV_RUIN_TILE_A.png",
+      "role": "combat_floor"
+    },
+    "ENV_RUIN_TILE_B": {
+      "texture": "res://assets/textures/env/ground/ENV_RUIN_TILE_B.png",
+      "role": "sand_floor"
+    },
+    "ENV_FOREST_TILE_A": {
+      "texture": "res://assets/textures/env/ground/ENV_FOREST_TILE_A.png",
+      "role": "combat_floor"
+    },
+    "ENV_FOREST_TILE_B": {
+      "texture": "res://assets/textures/env/ground/ENV_FOREST_TILE_B.png",
+      "role": "path"
+    },
+    "ENV_FROST_TILE_A": {
+      "texture": "res://assets/textures/env/ground/ENV_FROST_TILE_A.png",
+      "role": "snow_floor"
+    },
+    "ENV_FROST_TILE_B": {
+      "texture": "res://assets/textures/env/ground/ENV_FROST_TILE_B.png",
+      "role": "stone_floor"
+    },
+    "ENV_LAVA_TILE_A": {
+      "texture": "res://assets/textures/env/ground/ENV_LAVA_TILE_A.png",
+      "role": "combat_floor"
+    },
+    "ENV_LAVA_TILE_B": {
+      "texture": "res://assets/textures/env/ground/ENV_LAVA_TILE_B.png",
+      "role": "path"
+    },
+    "ENV_UNDERWORLD_TILE_A": {
+      "texture": "res://assets/textures/env/ground/ENV_UNDERWORLD_TILE_A.png",
+      "role": "combat_floor"
+    },
+    "ENV_UNDERWORLD_TILE_B": {
+      "texture": "res://assets/textures/env/ground/ENV_UNDERWORLD_TILE_B.png",
+      "role": "dungeon_floor"
+    },
+    "ENV_SKY_TILE_A": {
+      "texture": "res://assets/textures/env/ground/ENV_SKY_TILE_A.png",
+      "role": "combat_floor"
+    },
+    "ENV_SKY_TILE_B": {
+      "texture": "res://assets/textures/env/ground/ENV_SKY_TILE_B.png",
+      "role": "gravel_floor"
+    },
+    "ENV_PALACE_TILE_A": {
+      "texture": "res://assets/textures/env/ground/ENV_PALACE_TILE_A.png",
+      "role": "combat_floor"
+    },
+    "ENV_PALACE_TILE_B": {
+      "texture": "res://assets/textures/env/ground/ENV_PALACE_TILE_B.png",
+      "role": "stone_floor"
+    },
+    "ENV_BLOOD_TILE_A": {
+      "texture": "res://assets/textures/env/ground/ENV_BLOOD_TILE_A.png",
+      "role": "combat_floor"
+    },
+    "ENV_BLOOD_TILE_B": {
+      "texture": "res://assets/textures/env/ground/ENV_BLOOD_TILE_B.png",
+      "role": "wasteland_floor"
+    },
+    "ENV_ARENA_TILE_A": {
+      "texture": "res://assets/textures/env/ground/ENV_ARENA_TILE_A.png",
+      "role": "combat_floor"
+    },
+    "ENV_ARENA_TILE_B": {
+      "texture": "res://assets/textures/env/ground/ENV_ARENA_TILE_B.png",
+      "role": "ring_floor"
+    }
+  },
+  "weapons": {
+    "WPN_STAFF_01": {
+      "model": "res://assets/models/wpn/WPN_STAFF_01.glb",
+      "fallback": "box"
+    },
+    "WPN_SWORD_01": {
+      "model": "res://assets/models/wpn/WPN_SWORD_01.glb",
+      "fallback": "box"
+    },
+    "WPN_FAN_01": {
+      "model": "res://assets/models/wpn/WPN_FAN_01.glb",
+      "fallback": "box"
+    }
+  }
+}

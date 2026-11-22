@@ -1,0 +1,8 @@
+.godot/
+build/
+work/
+work_asset_list.txt
+outputs/
+*.tmp
+*.log
+

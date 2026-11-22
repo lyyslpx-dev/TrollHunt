@@ -1,0 +1,378 @@
+{
+  "version": 1,
+  "default_map": "MAP_01_ASHEN_YARD",
+  "tile_size_px": 512,
+  "source_policy": "布局图只用于取样与配色，运行时不直接使用等距渲染图。",
+  "themes": {
+    "MAP_01_ASHEN_YARD": {
+      "index": 1,
+      "name": "黄沙岗",
+      "slug": "ashen_yard",
+      "layout_source": "res://assets/concept/maps/ground_regions/01_ashen_yard_ground.png",
+      "palette": [
+        "#c99f38",
+        "#e4c465",
+        "#8b6525",
+        "#c9b47d",
+        "#1bbce7"
+      ],
+      "ground": {
+        "tile_a": "res://assets/textures/env/ground/ENV_ASHEN_TILE_A.png",
+        "tile_b": "res://assets/textures/env/ground/ENV_ASHEN_TILE_B.png",
+        "meters_per_tile": 2.0,
+        "roughness": 0.94,
+        "metallic": 0.0
+      },
+      "roles": {
+        "combat_floor": "tile_a",
+        "safe_floor": "tile_b",
+        "path": "tile_b",
+        "boss_floor": "tile_a"
+      },
+      "lighting": {
+        "ambient_color": "#c9a45c",
+        "ambient_energy": 0.58,
+        "sun_color": "#ffe4ad",
+        "sun_energy": 1.18,
+        "background_color": "#3b2d1c"
+      },
+      "hazard": {
+        "type": "quicksand",
+        "color": "#9f782b"
+      }
+    },
+    "MAP_02_RUIN_SANDS": {
+      "index": 2,
+      "name": "沙地遗迹",
+      "slug": "ruin_sands",
+      "layout_source": "res://assets/concept/maps/ground_regions/02_ruin_sands_ground.png",
+      "palette": [
+        "#c3933f",
+        "#e0b868",
+        "#735026",
+        "#b4a375",
+        "#35a7a1"
+      ],
+      "ground": {
+        "tile_a": "res://assets/textures/env/ground/ENV_RUIN_TILE_A.png",
+        "tile_b": "res://assets/textures/env/ground/ENV_RUIN_TILE_B.png",
+        "meters_per_tile": 2.0,
+        "roughness": 0.94,
+        "metallic": 0.0
+      },
+      "roles": {
+        "combat_floor": "tile_a",
+        "safe_floor": "tile_b",
+        "path": "tile_b",
+        "boss_floor": "tile_a"
+      },
+      "lighting": {
+        "ambient_color": "#b98a45",
+        "ambient_energy": 0.55,
+        "sun_color": "#ffdda0",
+        "sun_energy": 1.22,
+        "background_color": "#35261a"
+      },
+      "hazard": {
+        "type": "sandstorm",
+        "color": "#d2a34e"
+      }
+    },
+    "MAP_03_SHADOW_FOREST": {
+      "index": 3,
+      "name": "幽影森林",
+      "slug": "shadow_forest",
+      "layout_source": "res://assets/concept/maps/ground_regions/03_shadow_forest_ground.png",
+      "palette": [
+        "#314a32",
+        "#5f7d4a",
+        "#17251b",
+        "#7a8865",
+        "#4bdacb"
+      ],
+      "ground": {
+        "tile_a": "res://assets/textures/env/ground/ENV_FOREST_TILE_A.png",
+        "tile_b": "res://assets/textures/env/ground/ENV_FOREST_TILE_B.png",
+        "meters_per_tile": 2.0,
+        "roughness": 0.94,
+        "metallic": 0.0
+      },
+      "roles": {
+        "combat_floor": "tile_a",
+        "safe_floor": "tile_b",
+        "path": "tile_b",
+        "boss_floor": "tile_a"
+      },
+      "lighting": {
+        "ambient_color": "#52705a",
+        "ambient_energy": 0.44,
+        "sun_color": "#c8efb0",
+        "sun_energy": 0.96,
+        "background_color": "#0d1b16"
+      },
+      "hazard": {
+        "type": "poison",
+        "color": "#6cae68"
+      }
+    },
+    "MAP_04_FROST_KEEP": {
+      "index": 4,
+      "name": "寒霜堡垒",
+      "slug": "frost_keep",
+      "layout_source": "res://assets/concept/maps/ground_regions/04_frost_keep_ground.png",
+      "palette": [
+        "#bddcea",
+        "#ecf7fb",
+        "#7899ad",
+        "#8ba5b6",
+        "#2aa6e8"
+      ],
+      "ground": {
+        "tile_a": "res://assets/textures/env/ground/ENV_FROST_TILE_A.png",
+        "tile_b": "res://assets/textures/env/ground/ENV_FROST_TILE_B.png",
+        "meters_per_tile": 2.0,
+        "roughness": 0.82,
+        "metallic": 0.0
+      },
+      "roles": {
+        "combat_floor": "tile_a",
+        "safe_floor": "tile_b",
+        "path": "tile_b",
+        "boss_floor": "tile_a"
+      },
+      "lighting": {
+        "ambient_color": "#a8c8dc",
+        "ambient_energy": 0.64,
+        "sun_color": "#e6f5ff",
+        "sun_energy": 1.05,
+        "background_color": "#20313e"
+      },
+      "hazard": {
+        "type": "chill",
+        "color": "#8dd7f2"
+      }
+    },
+    "MAP_05_LAVA_DEPTHS": {
+      "index": 5,
+      "name": "熔岩深渊",
+      "slug": "lava_depths",
+      "layout_source": "res://assets/concept/maps/ground_regions/05_lava_depths_ground.png",
+      "palette": [
+        "#2c1b16",
+        "#553325",
+        "#160f0c",
+        "#7b4a2d",
+        "#ff641f"
+      ],
+      "ground": {
+        "tile_a": "res://assets/textures/env/ground/ENV_LAVA_TILE_A.png",
+        "tile_b": "res://assets/textures/env/ground/ENV_LAVA_TILE_B.png",
+        "meters_per_tile": 2.0,
+        "roughness": 0.94,
+        "metallic": 0.0
+      },
+      "roles": {
+        "combat_floor": "tile_a",
+        "safe_floor": "tile_b",
+        "path": "tile_b",
+        "boss_floor": "tile_a"
+      },
+      "lighting": {
+        "ambient_color": "#8a3b23",
+        "ambient_energy": 0.42,
+        "sun_color": "#ff9b55",
+        "sun_energy": 1.28,
+        "background_color": "#1a0c09"
+      },
+      "hazard": {
+        "type": "lava",
+        "color": "#ff5b1c"
+      }
+    },
+    "MAP_06_UNDERWORLD": {
+      "index": 6,
+      "name": "黄泉鬼域",
+      "slug": "underworld",
+      "layout_source": "res://assets/concept/maps/ground_regions/06_underworld_ground.png",
+      "palette": [
+        "#4b4260",
+        "#6e6188",
+        "#2b263a",
+        "#80759a",
+        "#a765d5"
+      ],
+      "ground": {
+        "tile_a": "res://assets/textures/env/ground/ENV_UNDERWORLD_TILE_A.png",
+        "tile_b": "res://assets/textures/env/ground/ENV_UNDERWORLD_TILE_B.png",
+        "meters_per_tile": 2.0,
+        "roughness": 0.94,
+        "metallic": 0.0
+      },
+      "roles": {
+        "combat_floor": "tile_a",
+        "safe_floor": "tile_b",
+        "path": "tile_b",
+        "boss_floor": "tile_a"
+      },
+      "lighting": {
+        "ambient_color": "#74688d",
+        "ambient_energy": 0.46,
+        "sun_color": "#c4b7ed",
+        "sun_energy": 0.9,
+        "background_color": "#171321"
+      },
+      "hazard": {
+        "type": "curse",
+        "color": "#9a60c5"
+      }
+    },
+    "MAP_07_SKY_ISLES": {
+      "index": 7,
+      "name": "天空浮岛",
+      "slug": "sky_isles",
+      "layout_source": "res://assets/concept/maps/ground_regions/07_sky_isles_ground.png",
+      "palette": [
+        "#c3b48b",
+        "#e1d5b5",
+        "#8c7d5d",
+        "#d4c7a1",
+        "#4dc5f2"
+      ],
+      "ground": {
+        "tile_a": "res://assets/textures/env/ground/ENV_SKY_TILE_A.png",
+        "tile_b": "res://assets/textures/env/ground/ENV_SKY_TILE_B.png",
+        "meters_per_tile": 2.0,
+        "roughness": 0.94,
+        "metallic": 0.0
+      },
+      "roles": {
+        "combat_floor": "tile_a",
+        "safe_floor": "tile_b",
+        "path": "tile_b",
+        "boss_floor": "tile_a"
+      },
+      "lighting": {
+        "ambient_color": "#d8d0b5",
+        "ambient_energy": 0.68,
+        "sun_color": "#fff2cf",
+        "sun_energy": 1.12,
+        "background_color": "#8ccce4"
+      },
+      "hazard": {
+        "type": "wind",
+        "color": "#9bddf3"
+      }
+    },
+    "MAP_08_DRAGON_PALACE": {
+      "index": 8,
+      "name": "海底龙宫",
+      "slug": "dragon_palace",
+      "layout_source": "res://assets/concept/maps/ground_regions/08_dragon_palace_ground.png",
+      "palette": [
+        "#246f77",
+        "#3f9d95",
+        "#123f49",
+        "#4c9d93",
+        "#35efcd"
+      ],
+      "ground": {
+        "tile_a": "res://assets/textures/env/ground/ENV_PALACE_TILE_A.png",
+        "tile_b": "res://assets/textures/env/ground/ENV_PALACE_TILE_B.png",
+        "meters_per_tile": 2.0,
+        "roughness": 0.82,
+        "metallic": 0.0
+      },
+      "roles": {
+        "combat_floor": "tile_a",
+        "safe_floor": "tile_b",
+        "path": "tile_b",
+        "boss_floor": "tile_a"
+      },
+      "lighting": {
+        "ambient_color": "#4c8f9a",
+        "ambient_energy": 0.52,
+        "sun_color": "#8ff7e5",
+        "sun_energy": 0.98,
+        "background_color": "#071f2a"
+      },
+      "hazard": {
+        "type": "water_pressure",
+        "color": "#35c9c1"
+      }
+    },
+    "MAP_09_BLOOD_MOON": {
+      "index": 9,
+      "name": "魔域·血月",
+      "slug": "blood_moon",
+      "layout_source": "res://assets/concept/maps/ground_regions/09_blood_moon_ground.png",
+      "palette": [
+        "#3a2525",
+        "#59342e",
+        "#1c1415",
+        "#5b4440",
+        "#e13e30"
+      ],
+      "ground": {
+        "tile_a": "res://assets/textures/env/ground/ENV_BLOOD_TILE_A.png",
+        "tile_b": "res://assets/textures/env/ground/ENV_BLOOD_TILE_B.png",
+        "meters_per_tile": 2.0,
+        "roughness": 0.94,
+        "metallic": 0.0
+      },
+      "roles": {
+        "combat_floor": "tile_a",
+        "safe_floor": "tile_b",
+        "path": "tile_b",
+        "boss_floor": "tile_a"
+      },
+      "lighting": {
+        "ambient_color": "#8d4b45",
+        "ambient_energy": 0.38,
+        "sun_color": "#ef8d77",
+        "sun_energy": 1.06,
+        "background_color": "#25090c"
+      },
+      "hazard": {
+        "type": "blood",
+        "color": "#d62f2d"
+      }
+    },
+    "MAP_10_ARENA": {
+      "index": 10,
+      "name": "擂台·天下第一",
+      "slug": "arena",
+      "layout_source": "res://assets/concept/maps/ground_regions/10_arena_ground.png",
+      "palette": [
+        "#bd852a",
+        "#e2b44c",
+        "#82521b",
+        "#cf9b3c",
+        "#c93b2b"
+      ],
+      "ground": {
+        "tile_a": "res://assets/textures/env/ground/ENV_ARENA_TILE_A.png",
+        "tile_b": "res://assets/textures/env/ground/ENV_ARENA_TILE_B.png",
+        "meters_per_tile": 2.0,
+        "roughness": 0.94,
+        "metallic": 0.0
+      },
+      "roles": {
+        "combat_floor": "tile_a",
+        "safe_floor": "tile_b",
+        "path": "tile_b",
+        "boss_floor": "tile_a"
+      },
+      "lighting": {
+        "ambient_color": "#d19a43",
+        "ambient_energy": 0.6,
+        "sun_color": "#ffe2a1",
+        "sun_energy": 1.25,
+        "background_color": "#38220f"
+      },
+      "hazard": {
+        "type": "ring_out",
+        "color": "#c73a2d"
+      }
+    }
+  }
+}

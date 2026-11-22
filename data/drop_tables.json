@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "tier_start_levels": [1, 10, 20, 30, 50],
+  "maps": {
+    "MAP_01_ASHEN_YARD": {
+      "tier": 1,
+      "normal_chance": 0.10,
+      "elite_chance": 0.40,
+      "boss_items": 0,
+      "weights": {
+        "normal": [75, 23, 2, 0, 0, 0, 0],
+        "elite": [25, 40, 30, 5, 0, 0, 0],
+        "boss": [0, 0, 0, 0, 0, 0, 0]
+      }
+    },
+    "MAP_02_RUIN_SANDS": {
+      "tier": 2,
+      "normal_chance": 0.09,
+      "elite_chance": 0.38,
+      "boss_items": 3,
+      "weights": {
+        "normal": [65, 28, 6, 0.9, 0.1, 0, 0],
+        "elite": [12, 35, 40, 11.5, 1.5, 0, 0],
+        "boss": [0, 0, 35, 55, 9, 1, 0]
+      }
+    },
+    "MAP_03_SHADOW_FOREST": {
+      "tier": 3,
+      "normal_chance": 0.08,
+      "elite_chance": 0.36,
+      "boss_items": 3,
+      "weights": {
+        "normal": [55, 32, 11, 1.8, 0.2, 0, 0],
+        "elite": [5, 28, 43, 20, 3.5, 0.5, 0],
+        "boss": [0, 0, 20, 60, 17, 2.8, 0.2]
+      }
+    },
+    "MAP_04_FROST_KEEP": {
+      "tier": 4,
+      "normal_chance": 0.08,
+      "elite_chance": 0.35,
+      "boss_items": 3,
+      "weights": {
+        "normal": [45, 34, 17, 3.5, 0.5, 0, 0],
+        "elite": [2, 20, 42, 28, 7, 1, 0],
+        "boss": [0, 0, 12, 58, 25, 4.5, 0.5]
+      }
+    },
+    "MAP_05_LAVA_DEPTHS": {
+      "tier": 4,
+      "normal_chance": 0.07,
+      "elite_chance": 0.34,
+      "boss_items": 3,
+      "weights": {
+        "normal": [38, 34, 21, 6, 0.9, 0.1, 0],
+        "elite": [0, 12, 38, 35, 12, 2.5, 0.5],
+        "boss": [0, 0, 6, 54, 32, 7.2, 0.8]
+      }
+    },
+    "MAP_06_UNDERWORLD": {
+      "tier": 4,
+      "normal_chance": 0.07,
+      "elite_chance": 0.33,
+      "boss_items": 3,
+      "weights": {
+        "normal": [32, 32, 24, 9, 2.5, 0.4, 0.1],
+        "elite": [0, 7, 30, 40, 18, 4.5, 0.5],
+        "boss": [0, 0, 3, 48, 38, 10, 1]
+      }
+    },
+    "MAP_07_SKY_ISLES": {
+      "tier": 5,
+      "normal_chance": 0.06,
+      "elite_chance": 0.32,
+      "boss_items": 3,
+      "weights": {
+        "normal": [26, 30, 27, 13, 3.5, 0.5, 0],
+        "elite": [0, 3, 22, 42, 24, 7, 2],
+        "boss": [0, 0, 0, 45, 40, 13, 2]
+      }
+    },
+    "MAP_08_DRAGON_PALACE": {
+      "tier": 5,
+      "normal_chance": 0.06,
+      "elite_chance": 0.31,
+      "boss_items": 3,
+      "weights": {
+        "normal": [20, 28, 30, 17, 4.5, 0.5, 0],
+        "elite": [0, 1, 15, 40, 30, 11, 3],
+        "boss": [0, 0, 0, 38, 42, 17, 3]
+      }
+    },
+    "MAP_09_BLOOD_MOON": {
+      "tier": 5,
+      "normal_chance": 0.06,
+      "elite_chance": 0.30,
+      "boss_items": 3,
+      "weights": {
+        "normal": [14, 25, 32, 21, 6, 1.5, 0.5],
+        "elite": [0, 0, 8, 36, 35, 17, 4],
+        "boss": [0, 0, 0, 30, 42, 24, 4]
+      }
+    },
+    "MAP_10_ARENA": {
+      "tier": 5,
+      "normal_chance": 0,
+      "elite_chance": 0,
+      "boss_items": 0,
+      "weights": {
+        "normal": [0, 0, 0, 0, 0, 0, 0],
+        "elite": [0, 0, 0, 0, 0, 0, 0],
+        "boss": [0, 0, 0, 0, 0, 0, 0]
+      }
+    }
+  }
+}
