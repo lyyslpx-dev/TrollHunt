@@ -12,6 +12,9 @@ signal camera_shake(strength: float)
 signal settings_changed(key: String, value: Variant)
 signal npc_prompt_changed(text: String, visible: bool)
 signal npc_upgrade_requested
+signal npc_teleport_requested
+signal npc_riddle_requested
 signal zone_prompt_changed(text: String, visible: bool)
 signal map_changed(map_id: String)
+signal travel_requested(map_id: String)
 

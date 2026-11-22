@@ -2120,6 +2120,93 @@
         }
       ],
       "spawns": []
+    },
+    "MAP_11_MISTY_SWAMP": {
+      "name": "迷雾沼泽",
+      "size": [120, 120],
+      "player_spawn": [-50, -50],
+      "field": {
+        "rect": [-60, -60, 120, 120],
+        "variant": "a"
+      },
+      "zones": [
+        {
+          "name": "渡口营地",
+          "rect": [-56, -56, 16, 14],
+          "variant": "b",
+          "safe": true
+        },
+        {
+          "name": "腐水浅滩",
+          "rect": [-40, -24, 30, 22],
+          "variant": "hazard",
+          "hazard": "swamp"
+        },
+        {
+          "name": "雾岛",
+          "rect": [12, 14, 26, 24],
+          "variant": "a",
+          "elite": true
+        },
+        {
+          "name": "沉船残骸",
+          "rect": [40, 40, 14, 12],
+          "variant": "b"
+        }
+      ],
+      "paths": [
+        {
+          "points": [[-49, -49], [-30, -20], [0, 0], [24, 22], [46, 44]],
+          "width": 5
+        }
+      ],
+      "props": [
+        {"type": "campfire", "pos": [-50, -50]},
+        {"type": "tent", "pos": [-55, -54], "yaw": 0.2},
+        {"type": "dead_tree", "pos": [-30, -12]},
+        {"type": "rock", "pos": [20, 26]},
+        {"type": "rock", "pos": [42, 42]}
+      ],
+      "spawns": [
+        {
+          "kind": "tree_melee",
+          "name": "沼泽藤妖",
+          "count": 8,
+          "rect": [-42, -20, 24, 16],
+          "interval": 5.0,
+          "model": "MON_VINE_01"
+        },
+        {
+          "kind": "spore_bomb",
+          "name": "毒雾菇",
+          "count": 5,
+          "rect": [-8, -2, 20, 14],
+          "interval": 6.0
+        },
+        {
+          "kind": "thin_wolf",
+          "name": "泥沼狼",
+          "count": 6,
+          "rect": [10, 20, 20, 16],
+          "interval": 6.0,
+          "model": "MON_ICEWOLF_01"
+        },
+        {
+          "kind": "corrupted_elite",
+          "name": "沼泽巫祭",
+          "count": 1,
+          "rect": [16, 18, 14, 12],
+          "interval": 30.0
+        },
+        {
+          "kind": "tree_demon",
+          "name": "沼泽古树精",
+          "count": 1,
+          "rect": [44, 42, 10, 8],
+          "interval": 60.0,
+          "model": "BOSS_TREE_DEMON_01"
+        }
+      ]
     }
   }
 }

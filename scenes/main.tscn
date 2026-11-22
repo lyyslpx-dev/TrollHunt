@@ -5,7 +5,6 @@
 [ext_resource type="Script" path="res://src/ui/hud.gd" id="3_hud"]
 [ext_resource type="Script" path="res://src/ui/damage_numbers.gd" id="4_numbers"]
 [ext_resource type="Script" path="res://src/gameplay/enemy_spawner.gd" id="5_spawner"]
-[ext_resource type="PackedScene" path="res://scenes/npc/upgrade_npc.tscn" id="6_upgrade_npc"]
 [ext_resource type="Script" path="res://src/gameplay/map_environment.gd" id="7_map_environment"]
 [ext_resource type="Script" path="res://src/gameplay/map_layout.gd" id="8_map_layout"]
 
@@ -82,5 +81,3 @@ script = ExtResource("4_numbers")
 [node name="Spawner" type="Node3D" parent="."]
 script = ExtResource("5_spawner")
 
-[node name="UpgradeNpc" parent="." instance=ExtResource("6_upgrade_npc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36, 0, -35)

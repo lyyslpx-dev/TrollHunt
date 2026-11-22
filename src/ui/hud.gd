@@ -225,7 +225,7 @@ func _build_settings_button() -> void:
 
 func _build_map_button() -> void:
 	var button := Button.new()
-	button.text = "换图"
+	button.text = "回主城"
 	button.anchor_left = 1.0
 	button.anchor_top = 0.0
 	button.anchor_right = 1.0
@@ -623,16 +623,7 @@ func _on_player_died() -> void:
 
 
 func _on_map_button_pressed() -> void:
-	var map_layout := get_tree().get_first_node_in_group("map_layout") as Node
-	if map_layout == null:
-		return
-	var ids := MapThemes.get_map_ids()
-	if ids.is_empty():
-		return
-	var current := GameState.current_map_id
-	var index := maxi(0, ids.find(current))
-	var next_index := (index + 1) % ids.size()
-	map_layout.call("switch_map", ids[next_index])
+	get_tree().change_scene_to_file("res://scenes/main_city.tscn")
 
 
 func _on_leaderboard_pressed() -> void:

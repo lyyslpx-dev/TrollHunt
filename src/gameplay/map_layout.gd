@@ -22,15 +22,6 @@ func _ready() -> void:
 	_connect_zone_signals.call_deferred()
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo:
-		var index := _map_index_for(event.keycode)
-		if index >= 0:
-			var ids := MapThemes.get_map_ids()
-			if index < ids.size():
-				switch_map(ids[index])
-
-
 func switch_map(new_map_id: String) -> void:
 	if new_map_id == map_id:
 		return
@@ -43,14 +34,6 @@ func switch_map(new_map_id: String) -> void:
 	_place_actors()
 	_connect_zone_signals.call_deferred()
 	Events.map_changed.emit(new_map_id)
-
-
-func _map_index_for(keycode: int) -> int:
-	if keycode >= KEY_1 and keycode <= KEY_9:
-		return keycode - KEY_1
-	if keycode == KEY_0:
-		return 9
-	return -1
 
 
 func _load_layout() -> void:

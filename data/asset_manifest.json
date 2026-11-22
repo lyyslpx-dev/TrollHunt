@@ -54,6 +54,66 @@
       "fallback": "capsule",
       "height": 1.8,
       "animations": []
+    },
+    "CHR_NPC_TELEPORT_01": {
+      "model": "res://assets/models/chr/npc/CHR_Npc_Teleport_01.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": []
+    },
+    "CHR_NPC_RIDDLE_01": {
+      "model": "res://assets/models/chr/npc/CHR_Npc_Riddle_01.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": []
+    },
+    "CHR_PHOTO_01": {
+      "model": "res://assets/models/chr/photo/CHR_Photo_01.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": []
+    },
+    "CHR_PHOTO_02": {
+      "model": "res://assets/models/chr/photo/CHR_Photo_02.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": []
+    },
+    "CHR_PHOTO_03": {
+      "model": "res://assets/models/chr/photo/CHR_Photo_03.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": []
+    },
+    "CHR_PHOTO_04": {
+      "model": "res://assets/models/chr/photo/CHR_Photo_04.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": []
+    },
+    "CHR_PHOTO_05": {
+      "model": "res://assets/models/chr/photo/CHR_Photo_05.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": []
+    },
+    "CHR_PHOTO_06": {
+      "model": "res://assets/models/chr/photo/CHR_Photo_06.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": []
+    },
+    "CHR_PHOTO_07": {
+      "model": "res://assets/models/chr/photo/CHR_Photo_07.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": []
+    },
+    "CHR_PHOTO_08": {
+      "model": "res://assets/models/chr/photo/CHR_Photo_08.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": []
     }
   },
   "outfits": {

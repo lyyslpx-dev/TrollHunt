@@ -17,6 +17,8 @@ var arena_history: Array[int] = []
 var xp: int = 0
 var xp_to_next: int = 100
 var riddle_bonus: float = 0.0
+var riddle_date: String = ""
+var riddle_answered_today: int = 0
 
 var max_hp: int = 420
 var hp: int = 420
