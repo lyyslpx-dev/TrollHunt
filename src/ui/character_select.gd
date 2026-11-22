@@ -143,9 +143,12 @@ func _build_ui() -> void:
 
 func _on_class_pressed(index: int) -> void:
 	_class_index = index
-	_model_index = MODEL_CHOICES.find(CLASS_MODELS[CLASSES[_class_index]])
-	if _model_index < 0:
-		_model_index = 3
+	var wanted: String = CLASS_MODELS[CLASSES[_class_index]]
+	_model_index = 3
+	for i in MODEL_CHOICES.size():
+		if String(MODEL_CHOICES[i][0]) == wanted:
+			_model_index = i
+			break
 	_refresh_class_label()
 	_refresh_model_label()
 
