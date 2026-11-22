@@ -3,15 +3,12 @@ extends Control
 
 const CLASSES := ["战士", "法师", "道士"]
 const CLASS_MODELS := {
-	"战士": "CHR_WARRIOR_01",
-	"法师": "CHR_MAGE_01",
-	"道士": "CHR_TAOIST_01",
+	"战士": "CHR_PHOTO_02",
+	"法师": "CHR_PHOTO_01",
+	"道士": "CHR_PHOTO_03",
 }
 const MODEL_CHOICES := [
-	["CHR_WARRIOR_01", "战士"],
-	["CHR_MAGE_01", "法师"],
-	["CHR_TAOIST_01", "道士"],
-	["CHR_CUSTOM_MALE_01", "自定义男角色"],
+	["CHR_PHOTO_07", "中年侠客"],
 	["CHR_PHOTO_01", "沉稳男士"],
 	["CHR_PHOTO_02", "黑衫武者"],
 	["CHR_PHOTO_03", "黑衫壮汉"],
@@ -20,17 +17,26 @@ const MODEL_CHOICES := [
 	["CHR_PHOTO_06", "少年"],
 	["CHR_PHOTO_07", "中年侠客"],
 	["CHR_PHOTO_08", "浴帽大叔"],
+	["CHR_WARRIOR_01", "战士原型"],
 ]
 
 var _class_index := 0
-var _model_index := 3
+var _model_index := 0
 var _name_edit: LineEdit
 var _class_label: Label
 var _model_label: Label
+var _preview_viewport: SubViewport
+var _preview_root: Node3D
 
 
 func _ready() -> void:
 	_build_ui()
+	_apply_current()
+
+
+func _process(delta: float) -> void:
+	if _preview_root:
+		_preview_root.rotation.y += delta * 0.7
 
 
 func _build_ui() -> void:
@@ -51,6 +57,22 @@ func _build_ui() -> void:
 	title.offset_top = 40
 	title.offset_bottom = 130
 	add_child(title)
+
+	_build_preview()
+
+	var continue_button := Button.new()
+	continue_button.name = "ContinueButton"
+	continue_button.text = "继续游戏"
+	continue_button.anchor_left = 0.5
+	continue_button.anchor_right = 0.5
+	continue_button.offset_left = -180
+	continue_button.offset_right = 180
+	continue_button.offset_top = 150
+	continue_button.offset_bottom = 205
+	continue_button.visible = GameState.character_created
+	continue_button.focus_mode = Control.FOCUS_NONE
+	continue_button.pressed.connect(_on_continue)
+	add_child(continue_button)
 
 	var column := VBoxContainer.new()
 	column.anchor_left = 0.5
@@ -141,10 +163,45 @@ func _build_ui() -> void:
 	_refresh_model_label()
 
 
+func _build_preview() -> void:
+	var container := SubViewportContainer.new()
+	container.anchor_left = 1.0
+	container.anchor_right = 1.0
+	container.anchor_top = 0.5
+	container.anchor_bottom = 0.5
+	container.offset_left = -360
+	container.offset_right = -60
+	container.offset_top = -190
+	container.offset_bottom = 170
+	container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(container)
+
+	_preview_viewport = SubViewport.new()
+	_preview_viewport.size = Vector2i(300, 360)
+	_preview_viewport.transparent_bg = true
+	_preview_viewport.own_world_3d = true
+	_preview_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	container.add_child(_preview_viewport)
+
+	var camera := Camera3D.new()
+	camera.position = Vector3(0, 1.15, 2.8)
+	camera.fov = 35.0
+	_preview_viewport.add_child(camera)
+	camera.look_at(Vector3(0, 1.05, 0))
+
+	var light := DirectionalLight3D.new()
+	light.rotation_degrees = Vector3(-40, -35, 0)
+	light.light_energy = 1.4
+	_preview_viewport.add_child(light)
+
+	_preview_root = Node3D.new()
+	_preview_viewport.add_child(_preview_root)
+
+
 func _on_class_pressed(index: int) -> void:
 	_class_index = index
 	var wanted: String = CLASS_MODELS[CLASSES[_class_index]]
-	_model_index = 3
+	_model_index = 0
 	for i in MODEL_CHOICES.size():
 		if String(MODEL_CHOICES[i][0]) == wanted:
 			_model_index = i
@@ -171,6 +228,49 @@ func _refresh_class_label() -> void:
 func _refresh_model_label() -> void:
 	if _model_label:
 		_model_label.text = MODEL_CHOICES[_model_index][1]
+	_refresh_preview()
+
+
+func _refresh_preview() -> void:
+	if _preview_root == null:
+		return
+	for child in _preview_root.get_children():
+		child.queue_free()
+	var id: String = String(MODEL_CHOICES[_model_index][0])
+	var model := AssetLibrary.instantiate(id)
+	if model == null:
+		model = _fallback_capsule()
+	_preview_root.add_child(model)
+	var aabb := AABB()
+	var found := false
+	for child in model.find_children("*", "MeshInstance3D", true, false):
+		var mi := child as MeshInstance3D
+		var world_aabb: AABB = mi.global_transform * mi.get_aabb()
+		if not found:
+			aabb = world_aabb
+			found = true
+		else:
+			aabb = aabb.merge(world_aabb)
+	if found and aabb.size.y > 0.01:
+		var target_height := 2.0
+		var scale := target_height / aabb.size.y
+		model.scale = Vector3.ONE * scale
+		model.position.y = -aabb.position.y * scale
+
+
+func _fallback_capsule() -> Node3D:
+	var root := Node3D.new()
+	var mesh := CapsuleMesh.new()
+	mesh.radius = 0.42
+	mesh.height = 1.7
+	var mi := MeshInstance3D.new()
+	mi.mesh = mesh
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(0.3, 0.55, 0.9)
+	mi.material_override = mat
+	mi.position.y = 0.85
+	root.add_child(mi)
+	return root
 
 
 func _on_start() -> void:
@@ -179,5 +279,25 @@ func _on_start() -> void:
 	GameState.selected_character_id = String(MODEL_CHOICES[_model_index][0])
 	var name_text := _name_edit.text.strip_edges()
 	GameState.player_name = name_text if not name_text.is_empty() else "无名侠士"
+	GameState.character_created = true
+	GameState.current_map_id = ""
+	Save.save_game()
+	get_tree().change_scene_to_file("res://scenes/main_city.tscn")
+
+
+func _on_continue() -> void:
 	GameState.current_map_id = ""
 	get_tree().change_scene_to_file("res://scenes/main_city.tscn")
+
+
+func _apply_current() -> void:
+	if _name_edit:
+		_name_edit.text = GameState.player_name
+	_class_index = maxi(0, CLASSES.find(GameState.selected_class))
+	_model_index = 3
+	for i in MODEL_CHOICES.size():
+		if String(MODEL_CHOICES[i][0]) == GameState.selected_character_id:
+			_model_index = i
+			break
+	_refresh_class_label()
+	_refresh_model_label()

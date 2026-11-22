@@ -401,3 +401,8 @@ func _half_size() -> float:
 	if size is Array and size.size() >= 2:
 		return maxf(float(size[0]), float(size[1])) * 0.5
 	return 50.0
+
+
+func map_bounds() -> Array:
+	var half := _half_size()
+	return [-half, -half, half, half]

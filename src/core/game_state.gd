@@ -4,6 +4,7 @@ extends Node
 var player_level: int = 1
 var player_name: String = "无名侠士"
 var selected_class: String = "战士"
+var character_created: bool = false
 var gold: int = 0
 var kills: int = 0
 var revival_count: int = 0
@@ -47,11 +48,13 @@ func level_up() -> void:
 	hp = max_hp
 	mp = max_mp
 	Events.player_stats_changed.emit()
+	Save.save_game()
 
 
 func apply_riddle_result(correct: bool) -> void:
 	riddle_bonus = clampf(riddle_bonus + (0.01 if correct else -0.01), -0.03, 0.03)
 	Events.player_stats_changed.emit()
+	Save.save_game()
 
 
 func reset_run() -> void:
@@ -79,6 +82,7 @@ func equip_item(item: ItemData) -> void:
 	equipped[item.slot] = item
 	attack += item.attack
 	defense += item.defense
+	Save.save_game()
 
 
 func unequip_item(item: ItemData) -> void:
@@ -88,6 +92,7 @@ func unequip_item(item: ItemData) -> void:
 		equipped.erase(item.slot)
 	attack = maxi(0, attack - item.attack)
 	defense = maxi(0, defense - item.defense)
+	Save.save_game()
 
 
 func strengthen_item(item: ItemData) -> int:
@@ -106,5 +111,6 @@ func strengthen_item(item: ItemData) -> int:
 	if equipped.get(item.slot) == item:
 		unequip_item(item)
 		equip_item(item)
+	Save.save_game()
 	return 1
 

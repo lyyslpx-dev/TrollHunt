@@ -38,6 +38,7 @@ func _build_visual() -> void:
 	if model:
 		model.name = "Model"
 		add_child(model)
+		_ground_model(model)
 		_find_anim_player(model)
 	else:
 		_add_fallback(Color(0.82, 0.50, 0.28))
@@ -86,3 +87,18 @@ func _add_fallback(color: Color) -> void:
 	node.material_override = mat
 	node.position.y = 0.85
 	add_child(node)
+
+
+func _ground_model(root: Node3D) -> void:
+	var aabb := AABB()
+	var found := false
+	for child in root.find_children("*", "MeshInstance3D", true, false):
+		var mi := child as MeshInstance3D
+		var world_aabb: AABB = mi.global_transform * mi.get_aabb()
+		if not found:
+			aabb = world_aabb
+			found = true
+		else:
+			aabb = aabb.merge(world_aabb)
+	if found:
+		root.position.y -= aabb.position.y

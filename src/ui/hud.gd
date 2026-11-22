@@ -61,6 +61,7 @@ func _ready() -> void:
 	_build_leaderboard()
 	_build_toast()
 	_build_zone_prompt()
+	_build_minimap()
 	_build_settings_menu()
 	_build_npc_interaction()
 	_build_upgrade_panel()
@@ -477,6 +478,20 @@ func _build_zone_prompt() -> void:
 	_zone_label.offset_bottom = 88
 	_zone_label.visible = false
 	add_child(_zone_label)
+
+
+func _build_minimap() -> void:
+	var minimap := Minimap.new()
+	minimap.anchor_left = 1.0
+	minimap.anchor_right = 1.0
+	minimap.anchor_top = 0.0
+	minimap.anchor_bottom = 0.0
+	minimap.offset_left = -208
+	minimap.offset_right = -24
+	minimap.offset_top = 92
+	minimap.offset_bottom = 276
+	minimap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(minimap)
 
 
 func _build_settings_menu() -> void:

@@ -10,6 +10,7 @@ var _camera_base: Vector3 = Vector3.ZERO
 var _shake: float = 0.0
 var _zoom: float = 1.0
 var _base_size: float = 9.0
+var _touches: Dictionary = {}
 const ZOOM_MIN := 0.55
 const ZOOM_MAX := 2.2
 
@@ -29,13 +30,30 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMagnifyGesture:
-		_zoom = clampf(_zoom / event.factor, ZOOM_MIN, ZOOM_MAX)
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			_touches[event.index] = event.position
+		else:
+			_touches.erase(event.index)
+	elif event is InputEventScreenDrag and _touches.has(event.index):
+		var previous := _two_finger_distance()
+		_touches[event.index] = event.position
+		if _touches.size() >= 2:
+			var current := _two_finger_distance()
+			if previous > 8.0 and current > 8.0:
+				_zoom = clampf(_zoom * (previous / current), ZOOM_MIN, ZOOM_MAX)
 	elif event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			_zoom = clampf(_zoom * 0.9, ZOOM_MIN, ZOOM_MAX)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			_zoom = clampf(_zoom / 0.9, ZOOM_MIN, ZOOM_MAX)
+
+
+func _two_finger_distance() -> float:
+	var positions := _touches.values()
+	if positions.size() < 2:
+		return 0.0
+	return (positions[0] as Vector2).distance_to(positions[1] as Vector2)
 
 
 func _process(delta: float) -> void:

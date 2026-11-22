@@ -144,6 +144,13 @@ func _build() -> void:
 	buttons.alignment = BoxContainer.ALIGNMENT_END
 	column.add_child(buttons)
 
+	var home_button := Button.new()
+	home_button.text = "返回首页 / 改角色"
+	home_button.custom_minimum_size = Vector2(170, 48)
+	home_button.focus_mode = Control.FOCUS_NONE
+	home_button.pressed.connect(_on_home_pressed)
+	buttons.add_child(home_button)
+
 	var reset_button := Button.new()
 	reset_button.text = "恢复默认"
 	reset_button.custom_minimum_size = Vector2(140, 48)
@@ -320,4 +327,9 @@ func _on_dyn_toggled(on: bool) -> void:
 func _on_reset_pressed() -> void:
 	Settings.reset_to_defaults()
 	_refresh()
+
+
+func _on_home_pressed() -> void:
+	Save.save_game()
+	get_tree().change_scene_to_file("res://scenes/character_select.tscn")
 

@@ -43,6 +43,7 @@ var _weapon_node: Node3D
 var _breath_player: AudioStreamPlayer
 var _model_base_y: float = 0.0
 var _walk_clock: float = 0.0
+var _anim_lock: float = 0.0
 
 
 func _ready() -> void:
@@ -146,6 +147,7 @@ func _hazard_slow_multiplier() -> float:
 func _physics_process(delta: float) -> void:
 	_attack_cd = maxf(0.0, _attack_cd - delta)
 	_invuln = maxf(0.0, _invuln - delta)
+	_anim_lock = maxf(0.0, _anim_lock - delta)
 	if _model:
 		_model.visible = _invuln <= 0.0 or (Time.get_ticks_msec() / 80) % 2 < 1
 	if _hit_stop > 0.0:
@@ -209,6 +211,18 @@ func _physics_process(delta: float) -> void:
 	_update_animation(input.length())
 	_update_breath(input.length())
 	move_and_slide()
+	_clamp_to_bounds()
+
+
+func _clamp_to_bounds() -> void:
+	var layout := get_tree().get_first_node_in_group("map_layout") as Node
+	if layout == null or not layout.has_method("map_bounds"):
+		return
+	var b: Array = layout.map_bounds()
+	if b.size() != 4:
+		return
+	global_position.x = clampf(global_position.x, float(b[0]), float(b[2]))
+	global_position.z = clampf(global_position.z, float(b[1]), float(b[3]))
 
 
 func _find_target() -> Enemy:
@@ -234,6 +248,7 @@ func perform_attack() -> void:
 	var combo_anims: Array[String] = ["attack1", "attack2", "attack3"]
 	_play_action(combo_anims[_combo])
 	_combo = (_combo + 1) % 3
+	_anim_lock = 0.5
 	_deal_damage(_target, multiplier)
 	FX.slash(get_parent(), _target.global_position)
 	_face(_target.global_position)
@@ -262,6 +277,7 @@ func use_skill(index: int) -> bool:
 	_skill_cd[index] = SKILL_CD[index]
 	_pending_skill = index
 	_skill_windup = 0.18
+	_anim_lock = 0.5
 	_play_action("skill")
 	Events.player_stats_changed.emit()
 	return true
@@ -355,6 +371,7 @@ func take_damage(amount: int) -> void:
 	amount = maxi(1, roundi(float(amount) * 0.4))
 	_invuln = 0.4
 	_hit_stop = 0.05
+	_anim_lock = 0.35
 	_play_action("hit")
 	FX.slash(get_parent(), global_position, Color(1.0, 0.35, 0.25))
 	Audio.play_sfx(SFX_HIT)
@@ -397,6 +414,8 @@ func _face(world_position: Vector3) -> void:
 
 func _update_animation(input_length: float) -> void:
 	if _dead:
+		return
+	if _anim_lock > 0.0:
 		return
 	var moving := input_length > 0.01
 	var played := _play_action("walk" if moving else "idle")

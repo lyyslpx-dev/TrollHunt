@@ -21,6 +21,7 @@ func _ready() -> void:
 	_build_joystick()
 	_build_npc_button()
 	_build_arena_button()
+	_build_minimap()
 	_build_panels()
 	Events.player_stats_changed.connect(_refresh_stats)
 	Events.npc_prompt_changed.connect(_on_npc_prompt)
@@ -104,6 +105,21 @@ func _build_arena_button() -> void:
 	_arena_button.focus_mode = Control.FOCUS_NONE
 	_arena_button.pressed.connect(_on_arena_pressed)
 	add_child(_arena_button)
+
+
+func _build_minimap() -> void:
+	var minimap := Minimap.new()
+	minimap.anchor_left = 1.0
+	minimap.anchor_right = 1.0
+	minimap.anchor_top = 0.0
+	minimap.anchor_bottom = 0.0
+	minimap.offset_left = -208
+	minimap.offset_right = -24
+	minimap.offset_top = 92
+	minimap.offset_bottom = 276
+	minimap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	minimap._bounds = Vector4(-45.0, -45.0, 45.0, 45.0)
+	add_child(minimap)
 
 
 func _build_panels() -> void:
