@@ -173,8 +173,8 @@ jobs:
           EXEC_NAME="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$APP/Info.plist")"
           EXECUTABLE="$APP/$EXEC_NAME"
 
-          if [ ! -f "$APP/game.pck" ]; then
-            echo "::error::game.pck is missing from the exported .app."
+          if [ ! -f "$APP/Game.pck" ]; then
+            echo "::error::Game.pck is missing from the exported .app."
             exit 1
           fi
 
@@ -194,7 +194,7 @@ jobs:
             echo "::warning::MinimumOSVersion is $MIN_OS, expected 14.0."
           fi
 
-          ls -lh "$APP/game.pck" "$EXECUTABLE"
+          ls -lh "$APP/Game.pck" "$EXECUTABLE"
 
       - name: Package Payload as IPA
         run: |
@@ -211,8 +211,8 @@ jobs:
 
           echo "--- IPA contents ---"
           unzip -l "$OUT" || true
-          if ! unzip -l "$OUT" | grep -q "Payload/$APP_NAME/game.pck"; then
-            echo "::error::Packaged IPA does not contain Payload/$APP_NAME/game.pck."
+          if ! unzip -l "$OUT" | grep -q "Payload/$APP_NAME/Game.pck"; then
+            echo "::error::Packaged IPA does not contain Payload/$APP_NAME/Game.pck."
             exit 1
           fi
           ls -lh "$OUT"
