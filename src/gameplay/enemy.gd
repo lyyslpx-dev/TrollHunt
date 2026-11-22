@@ -35,6 +35,7 @@ var aggro_range: float = 10.0
 var attack_range: float = 1.9
 var attack_interval: float = 1.4
 var gold_reward: int = 6
+var xp_reward: int = 15
 var is_boss: bool = false
 var drop_map_id: String = LootTable.DEFAULT_MAP_ID
 var _display_name: String = ""
@@ -72,6 +73,7 @@ func setup(enemy_kind: int, enemy_level: int = 1, map_id: String = LootTable.DEF
 			defense = 2
 			move_speed = 2.6
 			gold_reward = 5
+			xp_reward = 15
 			_body_height = 1.2
 		Kind.ARCHER:
 			max_hp = 55
@@ -81,6 +83,7 @@ func setup(enemy_kind: int, enemy_level: int = 1, map_id: String = LootTable.DEF
 			attack_range = 7.0
 			attack_interval = 2.2
 			gold_reward = 6
+			xp_reward = 18
 			_body_height = 1.5
 		Kind.BUG:
 			max_hp = 35
@@ -88,6 +91,7 @@ func setup(enemy_kind: int, enemy_level: int = 1, map_id: String = LootTable.DEF
 			defense = 0
 			move_speed = 4.2
 			gold_reward = 4
+			xp_reward = 10
 			_body_height = 0.9
 		Kind.ELITE:
 			max_hp = 320
@@ -96,6 +100,7 @@ func setup(enemy_kind: int, enemy_level: int = 1, map_id: String = LootTable.DEF
 			move_speed = 2.2
 			attack_interval = 1.8
 			gold_reward = 40
+			xp_reward = 80
 			_body_height = 2.0
 		Kind.BOSS:
 			max_hp = 1600
@@ -105,6 +110,7 @@ func setup(enemy_kind: int, enemy_level: int = 1, map_id: String = LootTable.DEF
 			attack_interval = 2.4
 			aggro_range = 16.0
 			gold_reward = 260
+			xp_reward = 400
 			_body_height = 3.4
 	max_hp = roundi(max_hp * (1.0 + 0.25 * float(level - 1)))
 	attack = roundi(attack * (1.0 + 0.20 * float(level - 1)))
@@ -477,6 +483,7 @@ func _die() -> void:
 		return
 	_dead = true
 	GameState.add_gold(gold_reward)
+	GameState.add_xp(xp_reward)
 	_drop_loot()
 	Audio.play_sfx(SFX_DEATH)
 	FX.aoe(get_parent(), global_position, 1.6 if not is_boss else 4.0, Color(1.0, 0.8, 0.4))

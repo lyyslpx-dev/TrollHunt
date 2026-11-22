@@ -69,20 +69,27 @@ func apply_ground_to(mesh: MeshInstance3D, map_id: String, variant: String = "a"
 		push_warning("地面材质缺失：%s" % texture_path)
 		return false
 
-	var material := StandardMaterial3D.new()
-	material.albedo_texture = load(texture_path) as Texture2D
-	material.albedo_color = Color.WHITE
-	material.roughness = float(ground.get("roughness", 0.92))
-	material.metallic = float(ground.get("metallic", 0.0))
-	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
-
 	var aabb := mesh.mesh.get_aabb()
 	var meters_per_tile := maxf(float(ground.get("meters_per_tile", 2.0)), 0.25)
-	material.uv1_scale = Vector3(
-		maxf(aabb.size.x, 1.0) / meters_per_tile,
-		maxf(aabb.size.z, 1.0) / meters_per_tile,
-		1.0
-	)
+
+	var shader := Shader.new()
+	shader.code = """
+shader_type spatial;
+uniform sampler2D tex : source_color, filter_linear_mipmap, repeat_enable;
+uniform float tiles_x = 1.0;
+uniform float tiles_y = 1.0;
+uniform float rough = 0.92;
+void fragment() {
+	ALBEDO = texture(tex, UV * vec2(tiles_x, tiles_y)).rgb;
+	ROUGHNESS = rough;
+}
+"""
+	var material := ShaderMaterial.new()
+	material.shader = shader
+	material.set_shader_parameter("tex", load(texture_path))
+	material.set_shader_parameter("tiles_x", maxf(aabb.size.x, 1.0) / meters_per_tile)
+	material.set_shader_parameter("tiles_y", maxf(aabb.size.z, 1.0) / meters_per_tile)
+	material.set_shader_parameter("rough", float(ground.get("roughness", 0.92)))
 	mesh.material_override = material
 	return true
 

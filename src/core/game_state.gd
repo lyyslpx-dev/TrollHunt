@@ -2,6 +2,8 @@ extends Node
 ## 当前局内与玩家数据。真正的计算逻辑放 gameplay，这里只存状态。
 
 var player_level: int = 1
+var player_name: String = "无名侠士"
+var selected_class: String = "战士"
 var gold: int = 0
 var kills: int = 0
 var revival_count: int = 0
@@ -12,15 +14,42 @@ var inventory: Array[ItemData] = []
 var equipped: Dictionary = {}
 var arena_best_wave: int = 0
 var arena_history: Array[int] = []
+var xp: int = 0
+var xp_to_next: int = 100
+var riddle_bonus: float = 0.0
 
-var max_hp: int = 100
-var hp: int = 100
-var max_mp: int = 50
-var mp: int = 50
-var attack: int = 12
-var defense: int = 4
+var max_hp: int = 420
+var hp: int = 420
+var max_mp: int = 60
+var mp: int = 60
+var attack: int = 18
+var defense: int = 8
 var crit_rate: float = 0.05
 var crit_damage: float = 1.5
+
+
+func add_xp(amount: int) -> void:
+	xp += maxi(0, amount)
+	while xp >= xp_to_next:
+		xp -= xp_to_next
+		level_up()
+
+
+func level_up() -> void:
+	player_level += 1
+	xp_to_next = 80 + player_level * 60
+	max_hp += 40
+	max_mp += 8
+	attack += 4
+	defense += 2
+	hp = max_hp
+	mp = max_mp
+	Events.player_stats_changed.emit()
+
+
+func apply_riddle_result(correct: bool) -> void:
+	riddle_bonus = clampf(riddle_bonus + (0.01 if correct else -0.01), -0.03, 0.03)
+	Events.player_stats_changed.emit()
 
 
 func reset_run() -> void:

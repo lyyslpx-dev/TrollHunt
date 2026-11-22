@@ -9,6 +9,16 @@ const SFX_CRIT := preload("res://assets/audio/sfx/crit.wav")
 const SFX_SKILL := preload("res://assets/audio/sfx/skill.wav")
 const SFX_DEATH := preload("res://assets/audio/sfx/death.wav")
 const SFX_BREATH := preload("res://assets/audio/sfx/breath.wav")
+const ANIM_CANDIDATES := {
+	"walk": ["human_000089", "run", "Run", "walk", "Walk", "Armature|run", "Armature|Run"],
+	"idle": ["human_000093", "idle", "Idle", "Armature|idle"],
+	"attack1": ["human_000059", "attack1", "Attack1", "attack", "Attack"],
+	"attack2": ["human_000018", "attack2", "Attack2"],
+	"attack3": ["human_000035", "attack3", "Attack3"],
+	"hit": ["human_000003", "hit", "Hit"],
+	"die": ["human_000014", "die", "Die", "death", "Death"],
+	"skill": ["human_000040", "skill", "Skill", "cast", "Cast"],
+}
 
 @export var move_speed: float = 5.0
 @export var gravity: float = 22.0
@@ -31,33 +41,40 @@ var _hit_stop := 0.0
 var _model: Node3D
 var _weapon_node: Node3D
 var _breath_player: AudioStreamPlayer
+var _model_base_y: float = 0.0
+var _walk_clock: float = 0.0
 
 
 func _ready() -> void:
-	var model := AssetLibrary.instantiate(GameState.selected_character_id)
-	if model:
-		var placeholder := get_node_or_null("Mesh") as MeshInstance3D
-		if placeholder:
-			placeholder.visible = false
-		model.name = "Model"
-		add_child(model)
-		_model = model
-		_find_anim_player(model)
+	_reload_visual()
 	_build_weapon()
 	_build_breath_player()
 
 
 func reload_model() -> void:
+	_reload_visual()
+	_build_weapon()
+
+
+func _reload_visual() -> void:
 	var old_model := get_node_or_null("Model") as Node3D
 	if old_model:
 		old_model.queue_free()
+	_model = null
+	_anim_player = null
 	var model := AssetLibrary.instantiate(GameState.selected_character_id)
+	var placeholder := get_node_or_null("Mesh") as MeshInstance3D
 	if model:
 		model.name = "Model"
 		add_child(model)
 		_model = model
+		_model_base_y = model.position.y
+		if placeholder:
+			placeholder.visible = false
 		_find_anim_player(model)
-	_build_weapon()
+	else:
+		if placeholder:
+			placeholder.visible = true
 
 
 func _build_weapon() -> void:
@@ -214,8 +231,8 @@ func perform_attack() -> void:
 	if global_position.distance_to(_target.global_position) > 2.6:
 		return
 	var multiplier: float = [1.0, 1.0, 1.55][_combo]
-	var combo_anims: Array[String] = ["human_000059", "human_000018", "human_000035"]
-	_play_animation(combo_anims[_combo])
+	var combo_anims: Array[String] = ["attack1", "attack2", "attack3"]
+	_play_action(combo_anims[_combo])
 	_combo = (_combo + 1) % 3
 	_deal_damage(_target, multiplier)
 	FX.slash(get_parent(), _target.global_position)
@@ -245,7 +262,7 @@ func use_skill(index: int) -> bool:
 	_skill_cd[index] = SKILL_CD[index]
 	_pending_skill = index
 	_skill_windup = 0.18
-	_play_animation("human_000040")
+	_play_action("skill")
 	Events.player_stats_changed.emit()
 	return true
 
@@ -335,9 +352,10 @@ func _deal_damage(enemy: Enemy, multiplier: float) -> void:
 func take_damage(amount: int) -> void:
 	if _dead or _invuln > 0.0:
 		return
+	amount = maxi(1, roundi(float(amount) * 0.4))
 	_invuln = 0.4
 	_hit_stop = 0.05
-	_play_animation("human_000003")
+	_play_action("hit")
 	FX.slash(get_parent(), global_position, Color(1.0, 0.35, 0.25))
 	Audio.play_sfx(SFX_HIT)
 	GameState.hp = maxi(0, GameState.hp - amount)
@@ -354,7 +372,7 @@ func _die() -> void:
 	if _dead:
 		return
 	_dead = true
-	_play_animation("human_000014")
+	_play_action("die")
 	Audio.play_sfx(SFX_DEATH)
 	Events.camera_shake.emit(0.4)
 	Events.player_died.emit()
@@ -378,23 +396,39 @@ func _face(world_position: Vector3) -> void:
 
 
 func _update_animation(input_length: float) -> void:
-	if _anim_player == null:
-		return
 	if _dead:
 		return
-	if input_length > 0.01:
-		_play_animation("human_000089")
-	else:
-		_play_animation("human_000093")
+	var moving := input_length > 0.01
+	var played := _play_action("walk" if moving else "idle")
+	_apply_walk_motion(moving, played)
 
 
-func _play_animation(anim_name: String) -> void:
+func _play_action(action: String) -> bool:
 	if _anim_player == null:
+		return false
+	var names: Array = ANIM_CANDIDATES.get(action, [])
+	for candidate in names:
+		if _anim_player.has_animation(candidate):
+			if _current_anim != candidate:
+				_current_anim = candidate
+				_anim_player.play(candidate)
+			return true
+	return false
+
+
+func _apply_walk_motion(moving: bool, played: bool) -> void:
+	if _model == null:
 		return
-	if not _anim_player.has_animation(anim_name):
+	_walk_clock += get_physics_process_delta_time()
+	if played:
+		_model.position.y = _model_base_y
+		_model.rotation.x = lerpf(_model.rotation.x, 0.0, 0.2)
 		return
-	if _current_anim == anim_name:
-		return
-	_current_anim = anim_name
-	_anim_player.play(anim_name)
+	var speed := 9.0 if moving else 3.0
+	var bob := sin(_walk_clock * speed) * (0.07 if moving else 0.03)
+	_model.position.y = _model_base_y + bob
+	if moving:
+		_model.rotation.x = sin(_walk_clock * speed) * 0.05
+	else:
+		_model.rotation.x = lerpf(_model.rotation.x, 0.0, 0.2)
 
