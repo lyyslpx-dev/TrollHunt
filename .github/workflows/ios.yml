@@ -207,11 +207,10 @@ jobs:
           mkdir -p build/ipa/Payload
           ditto "$APP" "build/ipa/Payload/$APP_NAME"
           rm -f "$OUT"
-          (
-            cd build/ipa
-            zip -qry "$OUT" Payload
-          )
+          ditto -c -k --keepParent build/ipa/Payload "$OUT"
 
+          echo "--- IPA contents ---"
+          unzip -l "$OUT" || true
           if ! unzip -l "$OUT" | grep -q "Payload/$APP_NAME/game.pck"; then
             echo "::error::Packaged IPA does not contain Payload/$APP_NAME/game.pck."
             exit 1
