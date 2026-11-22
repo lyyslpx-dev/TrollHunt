@@ -10,13 +10,13 @@ const SFX_SKILL := preload("res://assets/audio/sfx/skill.wav")
 const SFX_DEATH := preload("res://assets/audio/sfx/death.wav")
 const SFX_BREATH := preload("res://assets/audio/sfx/breath.wav")
 const ANIM_CANDIDATES := {
-	"walk": ["human_000089", "run", "Run", "walk", "Walk", "Armature|run", "Armature|Run"],
+	"walk": ["human_000089", "walking", "Walking", "run", "Run", "walk", "Walk", "Armature|run", "Armature|Run"],
 	"idle": ["human_000093", "idle", "Idle", "Armature|idle"],
 	"attack1": ["human_000059", "attack1", "Attack1", "attack", "Attack"],
 	"attack2": ["human_000018", "attack2", "Attack2"],
 	"attack3": ["human_000035", "attack3", "Attack3"],
 	"hit": ["human_000003", "hit", "Hit"],
-	"die": ["human_000014", "die", "Die", "death", "Death"],
+	"die": ["human_000014", "dying", "Dying", "die", "Die", "death", "Death"],
 	"skill": ["human_000040", "skill", "Skill", "cast", "Cast"],
 }
 
