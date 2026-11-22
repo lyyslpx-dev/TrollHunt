@@ -92,7 +92,7 @@
       "animations": []
     },
     "CHR_PHOTO_05": {
-      "model": "res://assets/models/chr/photo/CHR_Photo_05.glb",
+      "model": "res://assets/models/chr/npc/CHR_Npc_Riddle_01.glb",
       "fallback": "capsule",
       "height": 1.8,
       "animations": []
@@ -104,7 +104,7 @@
       "animations": []
     },
     "CHR_PHOTO_07": {
-      "model": "res://assets/models/chr/photo/CHR_Photo_07.glb",
+      "model": "res://assets/models/chr/npc/CHR_Npc_Teleport_01.glb",
       "fallback": "capsule",
       "height": 1.8,
       "animations": []
