@@ -3,6 +3,7 @@ extends Node3D
 
 const LAYOUT_PATH := "res://data/map_layouts.json"
 const FONT_PATH := "res://assets/fonts/NotoSansSC-Regular.otf"
+const MAP_SCALE := 2.6
 
 @export var map_id := ""
 
@@ -48,6 +49,7 @@ func _load_layout() -> void:
 		var map_data: Variant = maps.get(map_id, {})
 		if map_data is Dictionary:
 			_layout = map_data
+			_scale_layout(MAP_SCALE)
 
 
 func player_spawn() -> Vector3:
@@ -89,6 +91,27 @@ func _build_zones() -> void:
 
 
 func _build_paths() -> void:
+	_build_winding_roads()
+
+
+func _build_winding_roads() -> void:
+	var half := _half_size() * 0.72
+	var road_width := 7.0
+	var phase := float(map_id.hash()) * 0.01
+	for road in range(2):
+		var offset := -0.55 if road == 0 else 0.55
+		var points: Array = []
+		var steps := 26
+		for i in range(steps + 1):
+			var t := float(i) / float(steps)
+			var x := lerpf(-half, half, t)
+			var z := sin(t * TAU * 1.5 + phase + float(road)) * half * offset * 1.6
+			points.append(Vector3(x, 0.0, z))
+		for i in range(points.size() - 1):
+			_add_path_segment(points[i], points[i + 1], road_width)
+
+
+func _legacy_build_paths() -> void:
 	for path_value in _layout.get("paths", []):
 		var path: Dictionary = path_value
 		var points: Array = path.get("points", [])
@@ -98,6 +121,34 @@ func _build_paths() -> void:
 			var start := _point_from(points[i])
 			var end := _point_from(points[i + 1])
 			_add_path_segment(start, end, float(path.get("width", 3.0)))
+
+
+func _scale_layout(factor: float) -> void:
+	var field: Dictionary = _layout.get("field", {})
+	if field.has("rect"):
+		var rect: Array = field["rect"]
+		field["rect"] = [float(rect[0]) * factor, float(rect[1]) * factor, float(rect[2]) * factor, float(rect[3]) * factor]
+	var size: Variant = _layout.get("size", [40, 40])
+	if size is Array and size.size() >= 2:
+		_layout["size"] = [float(size[0]) * factor, float(size[1]) * factor]
+	var spawn: Variant = _layout.get("player_spawn", [0, 0])
+	if spawn is Array and spawn.size() >= 2:
+		_layout["player_spawn"] = [float(spawn[0]) * factor, float(spawn[1]) * factor]
+	for zone_value in _layout.get("zones", []):
+		if zone_value is Dictionary:
+			var rect: Array = zone_value.get("rect", [])
+			if rect.size() == 4:
+				zone_value["rect"] = [float(rect[0]) * factor, float(rect[1]) * factor, float(rect[2]) * factor, float(rect[3]) * factor]
+	for prop_value in _layout.get("props", []):
+		if prop_value is Dictionary and prop_value.has("pos"):
+			var pos: Array = prop_value["pos"]
+			if pos.size() >= 2:
+				prop_value["pos"] = [float(pos[0]) * factor, float(pos[1]) * factor]
+	for spawn_value in _layout.get("spawns", []):
+		if spawn_value is Dictionary and spawn_value.has("rect"):
+			var rect: Array = spawn_value["rect"]
+			if rect.size() == 4:
+				spawn_value["rect"] = [float(rect[0]) * factor, float(rect[1]) * factor, float(rect[2]) * factor, float(rect[3]) * factor]
 
 
 func _build_border() -> void:
