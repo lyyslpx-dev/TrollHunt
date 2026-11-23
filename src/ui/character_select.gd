@@ -76,6 +76,18 @@ func _panel_style(border_color: Color) -> StyleBoxFlat:
 	return style
 
 
+func _card_style() -> StyleBoxTexture:
+	var style := StyleBoxTexture.new()
+	style.texture = load("res://assets/ui/hd/card_frame.png") as Texture2D
+	style.texture_margin_left = 30.0
+	style.texture_margin_right = 30.0
+	style.texture_margin_top = 30.0
+	style.texture_margin_bottom = 30.0
+	style.axis_stretch_horizontal = StyleBoxTexture.AXIS_STRETCH_MODE_STRETCH
+	style.axis_stretch_vertical = StyleBoxTexture.AXIS_STRETCH_MODE_STRETCH
+	return style
+
+
 func _title_label(text: String) -> PanelContainer:
 	var panel := PanelContainer.new()
 	var style := StyleBoxFlat.new()
@@ -199,7 +211,7 @@ func _build_page1() -> void:
 	for i in CLASSES.size():
 		var cname: String = CLASSES[i]
 		var card := PanelContainer.new()
-		card.add_theme_stylebox_override("panel", _panel_style(Color(0.85, 0.68, 0.3)))
+		card.add_theme_stylebox_override("panel", _card_style())
 		card.custom_minimum_size = Vector2(240, 420)
 		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		card.size_flags_vertical = Control.SIZE_EXPAND_FILL

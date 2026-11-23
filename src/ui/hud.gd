@@ -11,7 +11,7 @@ var _settings_menu: SettingsMenu
 var _hp_bar: ProgressBar
 var _mp_bar: ProgressBar
 var _gold_label: Label
-var _skill_buttons: Array[Button] = []
+var _skill_buttons: Array[TextureButton] = []
 var _auto_check: CheckButton
 var _toast: Label
 var _toast_time: float = 0.0
@@ -132,14 +132,33 @@ func _build_title() -> void:
 
 
 func _build_status_bars() -> void:
+	var frame := TextureRect.new()
+	frame.texture = load("res://assets/ui/hd/panel_wide.png") as Texture2D
+	frame.stretch_mode = TextureRect.STRETCH_SCALE
+	frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	frame.anchor_left = 0.0
+	frame.anchor_top = 0.0
+	frame.offset_left = 8
+	frame.offset_top = 8
+	frame.offset_right = 348
+	frame.offset_bottom = 168
+	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(frame)
+
 	var box := VBoxContainer.new()
-	box.offset_left = 24
-	box.offset_top = 20
-	box.offset_right = 304
-	box.offset_bottom = 132
-	box.add_theme_constant_override("separation", 6)
+	box.offset_left = 30
+	box.offset_top = 26
+	box.offset_right = 330
+	box.offset_bottom = 156
+	box.add_theme_constant_override("separation", 5)
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(box)
+
+	var name_label := Label.new()
+	name_label.text = "%s · Lv.%d" % [GameState.player_name, GameState.player_level]
+	name_label.add_theme_font_size_override("font_size", 15)
+	name_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.55))
+	box.add_child(name_label)
 
 	_hp_bar = ProgressBar.new()
 	_hp_bar.max_value = 100
@@ -147,6 +166,14 @@ func _build_status_bars() -> void:
 	_hp_bar.show_percentage = false
 	_hp_bar.custom_minimum_size = Vector2(280, 26)
 	_hp_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var hp_bg := StyleBoxFlat.new()
+	hp_bg.bg_color = Color(0.05, 0.03, 0.04, 0.9)
+	hp_bg.set_corner_radius_all(6)
+	_hp_bar.add_theme_stylebox_override("background", hp_bg)
+	var hp_fill := StyleBoxFlat.new()
+	hp_fill.bg_color = Color(0.82, 0.18, 0.22)
+	hp_fill.set_corner_radius_all(6)
+	_hp_bar.add_theme_stylebox_override("fill", hp_fill)
 	box.add_child(_hp_bar)
 
 	_mp_bar = ProgressBar.new()
@@ -155,6 +182,14 @@ func _build_status_bars() -> void:
 	_mp_bar.show_percentage = false
 	_mp_bar.custom_minimum_size = Vector2(280, 18)
 	_mp_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var mp_bg := StyleBoxFlat.new()
+	mp_bg.bg_color = Color(0.03, 0.04, 0.08, 0.9)
+	mp_bg.set_corner_radius_all(5)
+	_mp_bar.add_theme_stylebox_override("background", mp_bg)
+	var mp_fill := StyleBoxFlat.new()
+	mp_fill.bg_color = Color(0.16, 0.44, 0.9)
+	mp_fill.set_corner_radius_all(5)
+	_mp_bar.add_theme_stylebox_override("fill", mp_fill)
 	box.add_child(_mp_bar)
 
 	_gold_label = Label.new()
@@ -186,26 +221,35 @@ func _build_joystick() -> void:
 
 
 func _build_skills() -> void:
-	var row := HBoxContainer.new()
-	row.anchor_left = 1.0
-	row.anchor_top = 1.0
-	row.anchor_right = 1.0
-	row.anchor_bottom = 1.0
-	row.offset_left = -376
-	row.offset_top = -132
-	row.offset_right = -40
-	row.offset_bottom = -44
-	row.alignment = BoxContainer.ALIGNMENT_END
-	row.add_theme_constant_override("separation", 14)
-	add_child(row)
-
-	for i in SKILL_LABELS.size():
-		var button := Button.new()
-		button.text = SKILL_LABELS[i]
-		button.custom_minimum_size = Vector2(78, 78)
+	var icons: Array[String] = [
+		"res://assets/ui/hd/icon_attack.png",
+		"res://assets/ui/hd/icon_whirlwind.png",
+		"res://assets/ui/hd/icon_charge.png",
+		"res://assets/ui/hd/icon_thunder.png",
+	]
+	var rects: Array[Rect2] = [
+		Rect2(-176, -176, 152, 152),
+		Rect2(-310, -150, 98, 98),
+		Rect2(-360, -286, 98, 98),
+		Rect2(-196, -344, 98, 98),
+	]
+	for i in icons.size():
+		var button := TextureButton.new()
+		button.texture_normal = load(icons[i])
+		button.stretch_mode = TextureButton.STRETCH_SCALE
+		button.ignore_texture_size = true
+		button.anchor_left = 1.0
+		button.anchor_top = 1.0
+		button.anchor_right = 1.0
+		button.anchor_bottom = 1.0
+		var r := rects[i]
+		button.offset_left = r.position.x
+		button.offset_top = r.position.y
+		button.offset_right = r.position.x + r.size.x
+		button.offset_bottom = r.position.y + r.size.y
 		button.focus_mode = Control.FOCUS_NONE
 		button.pressed.connect(_on_skill_pressed.bind(i))
-		row.add_child(button)
+		add_child(button)
 		_skill_buttons.append(button)
 
 
@@ -545,16 +589,16 @@ func _update_skills() -> void:
 	for i in _skill_buttons.size():
 		var button := _skill_buttons[i]
 		if i == 0:
-			button.text = "普攻"
+			button.modulate = Color.WHITE
 			continue
 		var cooldown: float = 0.0
 		if _player.has_method("skill_cooldown"):
 			cooldown = float(_player.call("skill_cooldown", i - 1))
 		if cooldown > 0.05:
-			button.text = "%s\n%.1fs" % [SKILL_LABELS[i], cooldown]
+			button.modulate = Color(0.45, 0.45, 0.45)
 			button.disabled = true
 		else:
-			button.text = "%s\n就绪" % SKILL_LABELS[i]
+			button.modulate = Color.WHITE
 			button.disabled = false
 
 
