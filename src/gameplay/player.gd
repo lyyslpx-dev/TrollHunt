@@ -83,7 +83,9 @@ func _build_weapon() -> void:
 	if weapon == null:
 		return
 	weapon.name = "Weapon"
-	if _model and is_instance_valid(_model):
+	if _attach_weapon_to_hand(weapon):
+		pass
+	elif _model and is_instance_valid(_model):
 		weapon.position = Vector3(0.42, 0.98, 0.18)
 		weapon.rotation.y = 0.35
 		_model.add_child(weapon)
@@ -92,6 +94,47 @@ func _build_weapon() -> void:
 		weapon.rotation.y = 0.4
 		add_child(weapon)
 	_weapon_node = weapon
+
+
+func _attach_weapon_to_hand(weapon: Node3D) -> bool:
+	if _model == null or not is_instance_valid(_model):
+		return false
+	var skeleton := _find_skeleton(_model)
+	if skeleton == null:
+		return false
+	var bone := _find_hand_bone(skeleton)
+	if bone.is_empty():
+		return false
+	var attach := BoneAttachment3D.new()
+	attach.name = "WeaponHand"
+	attach.bone_name = bone
+	skeleton.add_child(attach)
+	attach.add_child(weapon)
+	weapon.position = Vector3(0.02, -0.08, 0.05)
+	weapon.rotation_degrees = Vector3(-80.0, 0.0, 80.0)
+	return true
+
+
+func _find_skeleton(node: Node) -> Skeleton3D:
+	if node is Skeleton3D:
+		return node as Skeleton3D
+	for child in node.get_children():
+		var found := _find_skeleton(child)
+		if found:
+			return found
+	return null
+
+
+func _find_hand_bone(skeleton: Skeleton3D) -> String:
+	for i in skeleton.get_bone_count():
+		var bone_name: String = skeleton.get_bone_name(i)
+		if bone_name.contains("Hand") and (bone_name.contains("Right") or bone_name.contains("_R") or bone_name.to_lower().contains("hand_r")):
+			return bone_name
+	for i in skeleton.get_bone_count():
+		var bone_name: String = skeleton.get_bone_name(i)
+		if bone_name.contains("Hand"):
+			return bone_name
+	return ""
 
 
 func reload_weapon() -> void:
