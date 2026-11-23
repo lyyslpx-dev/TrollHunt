@@ -54,6 +54,7 @@ func load_game() -> void:
 	GameState.player_name = String(data.get("player_name", "无名侠士"))
 	GameState.selected_class = String(data.get("selected_class", "战士"))
 	GameState.selected_character_id = String(data.get("selected_character_id", "CHR_WARRIOR_01"))
+	GameState.sanitize_character_id()
 	GameState.player_level = int(data.get("player_level", 1))
 	GameState.xp = int(data.get("xp", 0))
 	GameState.xp_to_next = int(data.get("xp_to_next", 100))

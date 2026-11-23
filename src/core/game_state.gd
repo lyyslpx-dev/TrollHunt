@@ -1,6 +1,13 @@
 extends Node
 ## 当前局内与玩家数据。真正的计算逻辑放 gameplay，这里只存状态。
 
+const VALID_CHARACTER_IDS := [
+	"CHR_PHOTO_07", "CHR_PHOTO_01", "CHR_PHOTO_02", "CHR_PHOTO_03",
+	"CHR_PHOTO_04", "CHR_PHOTO_05", "CHR_PHOTO_06", "CHR_PHOTO_08",
+	"CHR_WARRIOR_01",
+]
+const DEFAULT_CHARACTER_ID := "CHR_PHOTO_07"
+
 var player_level: int = 1
 var player_name: String = "无名侠士"
 var selected_class: String = "战士"
@@ -8,7 +15,7 @@ var character_created: bool = false
 var gold: int = 0
 var kills: int = 0
 var revival_count: int = 0
-var selected_character_id: String = "CHR_WARRIOR_01"
+var selected_character_id: String = DEFAULT_CHARACTER_ID
 var current_map_id: String = "MAP_01_ASHEN_YARD"
 var selected_weapon_id: String = "WPN_SWORD_01"
 var inventory: Array[ItemData] = []
@@ -62,6 +69,11 @@ func reset_run() -> void:
 	mp = max_mp
 	kills = 0
 	revival_count = 0
+
+
+func sanitize_character_id() -> void:
+	if not VALID_CHARACTER_IDS.has(selected_character_id):
+		selected_character_id = DEFAULT_CHARACTER_ID
 
 
 func add_gold(amount: int) -> void:
