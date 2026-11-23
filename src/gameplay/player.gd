@@ -66,6 +66,7 @@ func _reload_visual() -> void:
 		model.name = "Model"
 		add_child(model)
 		_model = model
+		_ground_model(model)
 		_model_base_y = model.position.y
 		if placeholder:
 			placeholder.visible = false
@@ -110,8 +111,8 @@ func _attach_weapon_to_hand(weapon: Node3D) -> bool:
 	attach.bone_name = bone
 	skeleton.add_child(attach)
 	attach.add_child(weapon)
-	weapon.position = Vector3(0.02, -0.08, 0.05)
-	weapon.rotation_degrees = Vector3(-80.0, 0.0, 80.0)
+	weapon.position = Vector3(0.0, 0.85, 0.08)
+	weapon.rotation_degrees = Vector3(8.0, 0.0, 0.0)
 	return true
 
 
@@ -144,11 +145,27 @@ func reload_weapon() -> void:
 func _find_anim_player(node: Node) -> void:
 	if node is AnimationPlayer:
 		_anim_player = node as AnimationPlayer
+		_anim_player.root_motion_track = NodePath()
 		return
 	for child in node.get_children():
 		_find_anim_player(child)
 		if _anim_player:
 			return
+
+
+func _ground_model(root: Node3D) -> void:
+	var aabb := AABB()
+	var found := false
+	for child in root.find_children("*", "MeshInstance3D", true, false):
+		var mi := child as MeshInstance3D
+		var world_aabb: AABB = mi.transform * mi.get_aabb()
+		if not found:
+			aabb = world_aabb
+			found = true
+		else:
+			aabb = aabb.merge(world_aabb)
+	if found:
+		root.position.y -= aabb.position.y
 
 
 func set_move_input(direction: Vector2) -> void:
@@ -217,13 +234,13 @@ func _physics_process(delta: float) -> void:
 
 	var direction := right * input.x + forward * (-input.y)
 	var input_length := input.length()
-	var running := input_length > 0.85
+	var running := input_length > 0.6
 	var speed_multiplier := _hazard_slow_multiplier() * (1.55 if running else 1.0)
 	if direction.length_squared() > 0.001:
 		direction = direction.normalized()
 		velocity.x = direction.x * move_speed * speed_multiplier
 		velocity.z = direction.z * move_speed * speed_multiplier
-		rotation.y = atan2(-direction.x, -direction.z)
+		rotation.y = atan2(direction.x, direction.z)
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, move_speed * 6.0 * delta)
 		velocity.z = move_toward(velocity.z, 0.0, move_speed * 6.0 * delta)
@@ -434,7 +451,7 @@ func _face(world_position: Vector3) -> void:
 	var direction := world_position - global_position
 	direction.y = 0.0
 	if direction.length_squared() > 0.001:
-		rotation.y = atan2(-direction.x, -direction.z)
+		rotation.y = atan2(direction.x, direction.z)
 
 
 func _update_animation(input_length: float) -> void:
@@ -443,11 +460,11 @@ func _update_animation(input_length: float) -> void:
 	if _anim_lock > 0.0:
 		return
 	var moving := input_length > 0.01
-	var running := input_length > 0.85
+	var running := input_length > 0.6
 	var played := _play_action("walk" if moving else "idle")
 	if _anim_player and played:
 		_anim_player.speed_scale = 1.45 if running else 1.0
-	_apply_walk_motion(moving, played)
+
 
 
 func _play_action(action: String) -> bool:
@@ -478,4 +495,7 @@ func _apply_walk_motion(moving: bool, played: bool) -> void:
 		_model.rotation.x = sin(_walk_clock * speed) * 0.05
 	else:
 		_model.rotation.x = lerpf(_model.rotation.x, 0.0, 0.2)
+
+
+
 

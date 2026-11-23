@@ -28,13 +28,14 @@ var _weapon_button: Button
 var _inventory_button: Button
 var _inventory_panel: PanelContainer
 var _inventory_root: VBoxContainer
-var _inventory_list: VBoxContainer
+var _inventory_list: GridContainer
 var _inventory_detail: Label
 var _inventory_equipped: Label
 var _equipped_box: HBoxContainer
 var _detail_item: ItemData
 var _disenchant_button: Button
 var _strengthen_button: Button
+var _equip_detail_button: Button
 var _inventory_close_button: Button
 var _sort_inventory_button: Button
 var _arena_wave_label: Label
@@ -368,8 +369,10 @@ func _build_inventory() -> void:
 	title.add_theme_color_override("font_color", Color(1.0, 0.86, 0.4))
 	_inventory_root.add_child(title)
 
-	_inventory_list = VBoxContainer.new()
-	_inventory_list.add_theme_constant_override("separation", 6)
+	_inventory_list = GridContainer.new()
+	_inventory_list.columns = 5
+	_inventory_list.add_theme_constant_override("h_separation", 8)
+	_inventory_list.add_theme_constant_override("v_separation", 8)
 	_inventory_root.add_child(_inventory_list)
 
 	_inventory_equipped = Label.new()
@@ -393,6 +396,13 @@ func _build_inventory() -> void:
 	_disenchant_button.pressed.connect(_on_disenchant_pressed)
 	_disenchant_button.visible = false
 	_inventory_root.add_child(_disenchant_button)
+
+	_equip_detail_button = Button.new()
+	_equip_detail_button.text = "装备"
+	_equip_detail_button.focus_mode = Control.FOCUS_NONE
+	_equip_detail_button.pressed.connect(_on_equip_detail_pressed)
+	_equip_detail_button.visible = false
+	_inventory_root.add_child(_equip_detail_button)
 
 	_strengthen_button = Button.new()
 	_strengthen_button.text = "强化"
@@ -832,36 +842,17 @@ func _refresh_inventory() -> void:
 		equipped_row.add_child(equipped_label)
 		_equipped_box.add_child(equipped_row)
 	for item: ItemData in GameState.inventory:
-		var icon_rect: TextureRect
 		var icon := _icon_for_item(item)
+		var cell := Button.new()
+		cell.text = item.display_name
 		if icon:
-			icon_rect = TextureRect.new()
-			icon_rect.texture = icon
-			icon_rect.custom_minimum_size = Vector2(34, 34)
-			icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-			icon_rect.self_modulate = item.quality_color()
-		var label := Label.new()
-		label.text = item.full_name()
-		label.add_theme_font_size_override("font_size", 18)
-		label.add_theme_color_override("font_color", item.quality_color())
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 10)
-		if icon_rect:
-			row.add_child(icon_rect)
-		row.add_child(label)
-		var equip_button := Button.new()
-		var is_equipped: bool = GameState.equipped.get(item.slot) == item
-		equip_button.text = "卸下" if is_equipped else "装备"
-		equip_button.disabled = false
-		equip_button.focus_mode = Control.FOCUS_NONE
-		equip_button.pressed.connect(_on_equip_pressed.bind(item))
-		row.add_child(equip_button)
-		var detail_button := Button.new()
-		detail_button.text = "详情"
-		detail_button.focus_mode = Control.FOCUS_NONE
-		detail_button.pressed.connect(_on_detail_pressed.bind(item))
-		row.add_child(detail_button)
-		var panel := PanelContainer.new()
+			cell.icon = icon
+		cell.custom_minimum_size = Vector2(118, 92)
+		cell.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		cell.vertical_icon_alignment = VERTICAL_ALIGNMENT_CENTER
+		cell.expand_icon = true
+		cell.focus_mode = Control.FOCUS_NONE
+		cell.pressed.connect(_on_detail_pressed.bind(item))
 		var style := StyleBoxFlat.new()
 		style.bg_color = Color(0.0, 0.0, 0.0, 0.16)
 		style.border_color = item.quality_color()
@@ -871,9 +862,10 @@ func _refresh_inventory() -> void:
 		style.content_margin_right = 8
 		style.content_margin_top = 4
 		style.content_margin_bottom = 4
-		panel.add_theme_stylebox_override("panel", style)
-		panel.add_child(row)
-		_inventory_list.add_child(panel)
+		cell.add_theme_stylebox_override("normal", style)
+		cell.add_theme_stylebox_override("hover", style)
+		cell.add_theme_stylebox_override("pressed", style)
+		_inventory_list.add_child(cell)
 
 
 func _icon_for_item(item: ItemData) -> Texture2D:
@@ -894,10 +886,17 @@ func _icon_for_item(item: ItemData) -> Texture2D:
 func _on_equip_pressed(item: ItemData) -> void:
 	if GameState.equipped.get(item.slot) == item:
 		GameState.unequip_item(item)
+		if item.slot == "weapon":
+			GameState.selected_weapon_id = ""
 	else:
 		GameState.equip_item(item)
+		if item.slot == "weapon":
+			GameState.selected_weapon_id = "WPN_SWORD_01"
 	_refresh_inventory()
 	Events.player_stats_changed.emit()
+	var player := get_tree().get_first_node_in_group("player") as Node
+	if player and player.has_method("reload_weapon"):
+		player.call("reload_weapon")
 
 
 func _on_detail_pressed(item: ItemData) -> void:
@@ -919,10 +918,21 @@ func _on_detail_pressed(item: ItemData) -> void:
 		lines.append("攻击差：%+d  防御差：%+d" % [item.attack - equipped_item.attack, item.defense - equipped_item.defense])
 	_inventory_detail.text = "\n".join(lines)
 	_detail_item = item
+	if _equip_detail_button:
+		var is_equipped: bool = GameState.equipped.get(item.slot) == item
+		_equip_detail_button.text = "卸下" if is_equipped else "装备"
+		_equip_detail_button.visible = true
 	if _disenchant_button:
 		_disenchant_button.visible = true
 	if _strengthen_button:
 		_strengthen_button.visible = true
+
+
+func _on_equip_detail_pressed() -> void:
+	if _detail_item == null:
+		return
+	_on_equip_pressed(_detail_item)
+	_on_detail_pressed(_detail_item)
 
 
 func _on_disenchant_pressed() -> void:
@@ -988,5 +998,6 @@ func _update_arena_wave() -> void:
 	if spawner and spawner.has_method("arena_wave"):
 		var wave := int(spawner.call("arena_wave"))
 		_arena_wave_label.text = "波次：%d  最佳：%d" % [wave, GameState.arena_best_wave]
+
 
 
