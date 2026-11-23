@@ -146,10 +146,23 @@ func _build_status_bars() -> void:
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(frame)
 
+	var avatar := TextureRect.new()
+	avatar.texture = load("res://assets/ui/hd/avatar_frame.png") as Texture2D
+	avatar.stretch_mode = TextureRect.STRETCH_SCALE
+	avatar.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	avatar.anchor_left = 0.0
+	avatar.anchor_top = 0.0
+	avatar.offset_left = 14
+	avatar.offset_top = 16
+	avatar.offset_right = 78
+	avatar.offset_bottom = 80
+	avatar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(avatar)
+
 	var box := VBoxContainer.new()
-	box.offset_left = 30
+	box.offset_left = 88
 	box.offset_top = 26
-	box.offset_right = 330
+	box.offset_right = 340
 	box.offset_bottom = 156
 	box.add_theme_constant_override("separation", 5)
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -540,6 +553,21 @@ func _build_zone_prompt() -> void:
 
 
 func _build_minimap() -> void:
+	var frame_tex := load("res://assets/ui/hd/minimap_frame.png") as Texture2D
+	var frame := TextureRect.new()
+	frame.texture = frame_tex
+	frame.stretch_mode = TextureRect.STRETCH_SCALE
+	frame.anchor_left = 1.0
+	frame.anchor_right = 1.0
+	frame.anchor_top = 0.0
+	frame.anchor_bottom = 0.0
+	frame.offset_left = -216
+	frame.offset_right = -16
+	frame.offset_top = 88
+	frame.offset_bottom = 288
+	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(frame)
+
 	var minimap := Minimap.new()
 	minimap.anchor_left = 1.0
 	minimap.anchor_right = 1.0

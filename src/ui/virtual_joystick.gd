@@ -9,11 +9,15 @@ signal moved(direction: Vector2)
 var _touch_index: int = -1
 var _active: bool = false
 var _knob_offset: Vector2 = Vector2.ZERO
+var _base_texture: Texture2D
+var _knob_texture: Texture2D
 
 
 func _ready() -> void:
 	custom_minimum_size = Vector2(200, 200)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_base_texture = load("res://assets/ui/hd/joystick_base.png") as Texture2D
+	_knob_texture = load("res://assets/ui/hd/joystick_knob.png") as Texture2D
 	resized.connect(queue_redraw)
 
 
@@ -70,7 +74,13 @@ func _release() -> void:
 func _draw() -> void:
 	var center := size * 0.5
 	var radius := minf(size.x, size.y) * 0.5 - 4.0
-	draw_circle(center, radius, Color(0.08, 0.08, 0.10, 0.55))
-	draw_arc(center, radius, 0.0, TAU, 48, Color(0.92, 0.78, 0.42, 0.80), 3.0, true)
-	draw_circle(center + _knob_offset, knob_radius, Color(0.95, 0.80, 0.40, 0.90))
+	if _base_texture:
+		draw_texture_rect(_base_texture, Rect2(center - Vector2(radius, radius), Vector2(radius * 2.0, radius * 2.0)), false)
+	else:
+		draw_circle(center, radius, Color(0.08, 0.08, 0.10, 0.55))
+		draw_arc(center, radius, 0.0, TAU, 48, Color(0.92, 0.78, 0.42, 0.80), 3.0, true)
+	if _knob_texture:
+		draw_texture_rect(_knob_texture, Rect2(center + _knob_offset - Vector2(knob_radius, knob_radius), Vector2(knob_radius * 2.0, knob_radius * 2.0)), false)
+	else:
+		draw_circle(center + _knob_offset, knob_radius, Color(0.95, 0.80, 0.40, 0.90))
 
