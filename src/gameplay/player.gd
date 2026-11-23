@@ -348,8 +348,9 @@ func is_dead() -> bool:
 
 func _whirlwind() -> void:
 	_hit_stop = maxf(_hit_stop, 0.08)
-	FX.aoe(get_parent(), global_position, 2.9, Color(1.0, 0.55, 0.12))
-	FX.aoe(get_parent(), global_position, 2.2, Color(1.0, 0.85, 0.35))
+	FX.whirlwind(get_parent(), global_position, 2.9, Color(1.0, 0.55, 0.15))
+	FX.ring(get_parent(), global_position, 3.4, Color(1.0, 0.7, 0.25))
+	FX.sparks(get_parent(), global_position, Color(1.0, 0.6, 0.2), 14)
 	Events.camera_shake.emit(0.25)
 	for node in get_tree().get_nodes_in_group("enemy"):
 		var enemy := node as Enemy
@@ -368,9 +369,11 @@ func _charge() -> void:
 		if direction.length_squared() < 0.01:
 			direction = -global_transform.basis.z
 	direction = direction.normalized()
+	var from := global_position
 	global_position += direction * 3.4
 	_face(global_position + direction)
-	FX.aoe(get_parent(), global_position, 2.2, Color(0.35, 0.65, 1.0))
+	FX.dash(get_parent(), from, global_position, Color(0.35, 0.65, 1.0))
+	FX.ring(get_parent(), global_position, 2.6, Color(0.4, 0.7, 1.0))
 	Events.camera_shake.emit(0.22)
 	for node in get_tree().get_nodes_in_group("enemy"):
 		var enemy := node as Enemy
@@ -385,8 +388,8 @@ func _thunder() -> void:
 	var target_position := global_position + (-global_transform.basis.z) * 4.0
 	if _target and is_instance_valid(_target):
 		target_position = _target.global_position
-	FX.pillar(get_parent(), target_position, Color(1.0, 0.85, 0.4), 7.0)
-	FX.aoe(get_parent(), target_position, 3.2, Color(1.0, 0.9, 0.5))
+	FX.thunder(get_parent(), target_position, Color(1.0, 0.85, 0.4))
+	FX.sparks(get_parent(), target_position, Color(1.0, 0.9, 0.5), 16)
 	Events.camera_shake.emit(0.32)
 	for node in get_tree().get_nodes_in_group("enemy"):
 		var enemy := node as Enemy

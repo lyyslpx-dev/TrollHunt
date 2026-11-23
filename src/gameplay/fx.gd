@@ -88,3 +88,95 @@ static func _arc_mesh(inner: float, outer: float, start_angle: float, end_angle:
 	surface.generate_normals()
 	return surface.commit()
 
+
+static func whirlwind(parent: Node, world_position: Vector3, radius: float, color: Color) -> void:
+	for i in 6:
+		var mesh := _arc_mesh(radius * 0.25, radius, float(i) / 6.0 * TAU, float(i) / 6.0 * TAU + 0.8, 12)
+		var material := _additive_material(Color(color.r, color.g, color.b, 0.7))
+		material.billboard_mode = BaseMaterial3D.BILLBOARD_DISABLED
+		var instance := MeshInstance3D.new()
+		instance.mesh = mesh
+		instance.material_override = material
+		instance.position = world_position + Vector3(0, 0.15, 0)
+		instance.rotation.y = randf_range(0.0, TAU)
+		parent.add_child(instance)
+		var tween := instance.create_tween()
+		tween.tween_property(instance, "rotation:y", instance.rotation.y + 2.2, 0.4)
+		tween.parallel().tween_property(instance, "scale", Vector3(1.7, 1.7, 1.7), 0.4)
+		tween.parallel().tween_property(material, "albedo_color", Color(color.r, color.g, color.b, 0.0), 0.4)
+		tween.tween_callback(instance.queue_free)
+	aoe(parent, world_position, radius, color)
+
+
+static func ring(parent: Node, world_position: Vector3, radius: float, color: Color) -> void:
+	var torus := TorusMesh.new()
+	torus.inner_radius = radius * 0.4
+	torus.outer_radius = radius * 0.52
+	var material := _additive_material(Color(color.r, color.g, color.b, 0.85))
+	var instance := MeshInstance3D.new()
+	instance.mesh = torus
+	instance.material_override = material
+	instance.position = world_position + Vector3(0, 0.1, 0)
+	parent.add_child(instance)
+	var tween := instance.create_tween()
+	tween.tween_property(instance, "scale", Vector3(1.9, 1.9, 1.9), 0.35)
+	tween.parallel().tween_property(material, "albedo_color", Color(color.r, color.g, color.b, 0.0), 0.4)
+	tween.tween_callback(instance.queue_free)
+
+
+static func thunder(parent: Node, world_position: Vector3, color: Color) -> void:
+	pillar(parent, world_position, color, 8.0)
+	ring(parent, world_position, 3.2, color)
+	for i in 5:
+		var bolt := MeshInstance3D.new()
+		var mesh := CylinderMesh.new()
+		mesh.top_radius = 0.06
+		mesh.bottom_radius = 0.06
+		mesh.height = randf_range(2.0, 4.0)
+		bolt.mesh = mesh
+		var mat := _additive_material(Color(color.r, color.g, color.b, 0.9))
+		bolt.material_override = mat
+		var offset := Vector3(randf_range(-1.5, 1.5), 3.5, randf_range(-1.5, 1.5))
+		bolt.position = world_position + offset
+		bolt.rotation.x = randf_range(-0.5, 0.5)
+		bolt.rotation.z = randf_range(-0.5, 0.5)
+		parent.add_child(bolt)
+		var btween := bolt.create_tween()
+		btween.tween_property(mat, "albedo_color", Color(color.r, color.g, color.b, 0.0), 0.3)
+		btween.tween_callback(bolt.queue_free)
+
+
+static func sparks(parent: Node, world_position: Vector3, color: Color, count: int = 10) -> void:
+	for i in count:
+		var spark := MeshInstance3D.new()
+		var mesh := SphereMesh.new()
+		mesh.radius = 0.06
+		mesh.height = 0.12
+		spark.mesh = mesh
+		var material := _additive_material(Color(color.r, color.g, color.b, 0.9))
+		spark.material_override = material
+		spark.position = world_position + Vector3(0, 0.5, 0)
+		parent.add_child(spark)
+		var direction := Vector3(randf_range(-1, 1), randf_range(0.3, 1), randf_range(-1, 1)).normalized()
+		var tween := spark.create_tween()
+		tween.tween_property(spark, "position", spark.position + direction * randf_range(1.5, 3.0), 0.35).set_trans(Tween.TRANS_QUAD)
+		tween.parallel().tween_property(material, "albedo_color", Color(color.r, color.g, color.b, 0.0), 0.35)
+		tween.tween_callback(spark.queue_free)
+
+
+static func dash(parent: Node, from: Vector3, to: Vector3, color: Color) -> void:
+	for i in 6:
+		var ghost := MeshInstance3D.new()
+		var mesh := SphereMesh.new()
+		mesh.radius = 0.4
+		mesh.height = 1.4
+		ghost.mesh = mesh
+		var material := _additive_material(Color(color.r, color.g, color.b, 0.25))
+		ghost.material_override = material
+		var t := float(i) / 5.0
+		ghost.position = from.lerp(to, t) + Vector3(0, 0.7, 0)
+		parent.add_child(ghost)
+		var tween := ghost.create_tween()
+		tween.tween_property(material, "albedo_color", Color(color.r, color.g, color.b, 0.0), 0.3)
+		tween.tween_callback(ghost.queue_free)
+
