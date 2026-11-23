@@ -8,7 +8,6 @@ const SFX_HIT := preload("res://assets/audio/sfx/hit.wav")
 const SFX_CRIT := preload("res://assets/audio/sfx/crit.wav")
 const SFX_SKILL := preload("res://assets/audio/sfx/skill.wav")
 const SFX_DEATH := preload("res://assets/audio/sfx/death.wav")
-const SFX_BREATH := preload("res://assets/audio/sfx/breath.wav")
 const ANIM_CANDIDATES := {
 	"walk": ["human_000089", "walking", "Walking", "run", "Run", "walk", "Walk", "Armature|run", "Armature|Run"],
 	"idle": ["human_000093", "idle", "Idle", "Armature|idle"],
@@ -40,7 +39,6 @@ var _pending_skill := -1
 var _hit_stop := 0.0
 var _model: Node3D
 var _weapon_node: Node3D
-var _breath_player: AudioStreamPlayer
 var _model_base_y: float = 0.0
 var _walk_clock: float = 0.0
 var _anim_lock: float = 0.0
@@ -49,7 +47,6 @@ var _anim_lock: float = 0.0
 func _ready() -> void:
 	_reload_visual()
 	_build_weapon()
-	_build_breath_player()
 
 
 func reload_model() -> void:
@@ -83,39 +80,22 @@ func _build_weapon() -> void:
 		_weapon_node.queue_free()
 	_weapon_node = null
 	var weapon := AssetLibrary.instantiate(GameState.selected_weapon_id)
-	if weapon:
-		weapon.name = "Weapon"
+	if weapon == null:
+		return
+	weapon.name = "Weapon"
+	if _model and is_instance_valid(_model):
+		weapon.position = Vector3(0.42, 0.98, 0.18)
+		weapon.rotation.y = 0.35
+		_model.add_child(weapon)
+	else:
 		weapon.position = Vector3(0.55, 1.0, 0.35)
 		weapon.rotation.y = 0.4
 		add_child(weapon)
-		_weapon_node = weapon
+	_weapon_node = weapon
 
 
 func reload_weapon() -> void:
 	_build_weapon()
-
-
-func _build_breath_player() -> void:
-	if _breath_player:
-		return
-	_breath_player = AudioStreamPlayer.new()
-	_breath_player.volume_db = -18.0
-	add_child(_breath_player)
-
-
-func _update_breath(input_length: float) -> void:
-	if _breath_player == null:
-		return
-	var should_play := not _dead and input_length <= 0.01 and _skill_windup <= 0.0 and _hit_stop <= 0.0
-	if should_play:
-		if not _breath_player.playing:
-			var stream := SFX_BREATH.duplicate() as AudioStreamWAV
-			stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
-			stream.loop_end = int(stream.get_length() * stream.mix_rate)
-			_breath_player.stream = stream
-			_breath_player.play()
-	elif _breath_player.playing:
-		_breath_player.stop()
 
 
 func _find_anim_player(node: Node) -> void:
@@ -193,11 +173,14 @@ func _physics_process(delta: float) -> void:
 		right = right.normalized()
 
 	var direction := right * input.x + forward * (-input.y)
-	var speed_multiplier := _hazard_slow_multiplier()
+	var input_length := input.length()
+	var running := input_length > 0.85
+	var speed_multiplier := _hazard_slow_multiplier() * (1.55 if running else 1.0)
 	if direction.length_squared() > 0.001:
 		direction = direction.normalized()
 		velocity.x = direction.x * move_speed * speed_multiplier
 		velocity.z = direction.z * move_speed * speed_multiplier
+		rotation.y = atan2(-direction.x, -direction.z)
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, move_speed * 6.0 * delta)
 		velocity.z = move_toward(velocity.z, 0.0, move_speed * 6.0 * delta)
@@ -209,7 +192,6 @@ func _physics_process(delta: float) -> void:
 			perform_attack()
 
 	_update_animation(input.length())
-	_update_breath(input.length())
 	move_and_slide()
 	_clamp_to_bounds()
 
@@ -418,7 +400,10 @@ func _update_animation(input_length: float) -> void:
 	if _anim_lock > 0.0:
 		return
 	var moving := input_length > 0.01
+	var running := input_length > 0.85
 	var played := _play_action("walk" if moving else "idle")
+	if _anim_player and played:
+		_anim_player.speed_scale = 1.45 if running else 1.0
 	_apply_walk_motion(moving, played)
 
 

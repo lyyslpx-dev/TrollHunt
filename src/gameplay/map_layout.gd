@@ -406,3 +406,10 @@ func _half_size() -> float:
 func map_bounds() -> Array:
 	var half := _half_size()
 	return [-half, -half, half, half]
+
+
+func map_zones() -> Array:
+	var zones: Variant = _layout.get("zones", [])
+	if zones is Array:
+		return zones
+	return []

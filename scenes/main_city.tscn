@@ -48,14 +48,14 @@ mesh = SubResource("Mesh_player")
 material_override = SubResource("Mat_player")
 
 [node name="CameraRig" type="Node3D" parent="."]
-rotation = Vector3(-0.785398, 0.785398, 0)
+rotation = Vector3(-0.349066, 0, 0)
 script = ExtResource("3_camera")
 target_path = NodePath("../Player")
 
 [node name="Camera3D" type="Camera3D" parent="CameraRig"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 4.2)
 projection = 1
-size = 9.0
+size = 6.0
 
 [node name="HUD" type="CanvasLayer" parent="."]
 layer = 30

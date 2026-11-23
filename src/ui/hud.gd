@@ -27,6 +27,7 @@ var _character_button: Button
 var _weapon_button: Button
 var _inventory_button: Button
 var _inventory_panel: PanelContainer
+var _inventory_root: VBoxContainer
 var _inventory_list: VBoxContainer
 var _inventory_detail: Label
 var _inventory_equipped: Label
@@ -116,7 +117,7 @@ func _build_title() -> void:
 	var theme := MapThemes.get_theme(GameState.current_map_id if not GameState.current_map_id.is_empty() else MapThemes.default_map_id())
 	if not theme.is_empty():
 		map_name = String(theme.get("name", map_name))
-	label.text = map_name + " · 白盒测试"
+	label.text = map_name
 	label.add_theme_font_size_override("font_size", 22)
 	label.add_theme_color_override("font_color", Color(0.96, 0.88, 0.66))
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -313,56 +314,60 @@ func _build_inventory() -> void:
 	style.content_margin_bottom = 14
 	_inventory_panel.add_theme_stylebox_override("panel", style)
 
+	_inventory_root = VBoxContainer.new()
+	_inventory_root.add_theme_constant_override("separation", 8)
+	_inventory_panel.add_child(_inventory_root)
+
 	var title := Label.new()
 	title.text = "背包"
 	title.add_theme_font_size_override("font_size", 24)
 	title.add_theme_color_override("font_color", Color(1.0, 0.86, 0.4))
-	_inventory_panel.add_child(title)
+	_inventory_root.add_child(title)
 
 	_inventory_list = VBoxContainer.new()
 	_inventory_list.add_theme_constant_override("separation", 6)
-	_inventory_panel.add_child(_inventory_list)
+	_inventory_root.add_child(_inventory_list)
 
 	_inventory_equipped = Label.new()
 	_inventory_equipped.text = "已装备：无"
 	_inventory_equipped.add_theme_font_size_override("font_size", 18)
-	_inventory_panel.add_child(_inventory_equipped)
+	_inventory_root.add_child(_inventory_equipped)
 
 	_equipped_box = HBoxContainer.new()
 	_equipped_box.add_theme_constant_override("separation", 8)
-	_inventory_panel.add_child(_equipped_box)
+	_inventory_root.add_child(_equipped_box)
 
 	_inventory_detail = Label.new()
 	_inventory_detail.text = ""
 	_inventory_detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_inventory_detail.custom_minimum_size = Vector2(430, 90)
-	_inventory_panel.add_child(_inventory_detail)
+	_inventory_root.add_child(_inventory_detail)
 
 	_disenchant_button = Button.new()
 	_disenchant_button.text = "分解"
 	_disenchant_button.focus_mode = Control.FOCUS_NONE
 	_disenchant_button.pressed.connect(_on_disenchant_pressed)
 	_disenchant_button.visible = false
-	_inventory_panel.add_child(_disenchant_button)
+	_inventory_root.add_child(_disenchant_button)
 
 	_strengthen_button = Button.new()
 	_strengthen_button.text = "强化"
 	_strengthen_button.focus_mode = Control.FOCUS_NONE
 	_strengthen_button.pressed.connect(_on_strengthen_pressed)
 	_strengthen_button.visible = false
-	_inventory_panel.add_child(_strengthen_button)
+	_inventory_root.add_child(_strengthen_button)
 
 	_inventory_close_button = Button.new()
 	_inventory_close_button.text = "关闭"
 	_inventory_close_button.focus_mode = Control.FOCUS_NONE
 	_inventory_close_button.pressed.connect(_on_inventory_pressed)
-	_inventory_panel.add_child(_inventory_close_button)
+	_inventory_root.add_child(_inventory_close_button)
 
 	_sort_inventory_button = Button.new()
 	_sort_inventory_button.text = "排序"
 	_sort_inventory_button.focus_mode = Control.FOCUS_NONE
 	_sort_inventory_button.pressed.connect(_on_sort_inventory_pressed)
-	_inventory_panel.add_child(_sort_inventory_button)
+	_inventory_root.add_child(_sort_inventory_button)
 
 
 func _build_arena_wave_label() -> void:
@@ -927,7 +932,7 @@ func _on_map_changed(map_id: String) -> void:
 	if _label_title == null:
 		return
 	var theme := MapThemes.get_theme(map_id)
-	_label_title.text = String(theme.get("name", map_id)) + " · 白盒测试"
+	_label_title.text = String(theme.get("name", map_id))
 	if _arena_wave_label:
 		_arena_wave_label.visible = map_id == "MAP_10_ARENA"
 
@@ -939,4 +944,5 @@ func _update_arena_wave() -> void:
 	if spawner and spawner.has_method("arena_wave"):
 		var wave := int(spawner.call("arena_wave"))
 		_arena_wave_label.text = "波次：%d  最佳：%d" % [wave, GameState.arena_best_wave]
+
 
