@@ -14,6 +14,7 @@ const CLASS_DESCS := {
 }
 const MODEL_CHOICES := [
 	["CHR_PHOTO_07", "中年侠客"],
+	["CHR_DEFAULT_01", "四视图男"],
 	["CHR_PHOTO_01", "沉稳男士"],
 	["CHR_PHOTO_02", "黑衫武者"],
 	["CHR_PHOTO_03", "黑衫壮汉"],
@@ -21,6 +22,9 @@ const MODEL_CHOICES := [
 	["CHR_PHOTO_05", "猫纹短裤"],
 	["CHR_PHOTO_06", "少年"],
 	["CHR_PHOTO_08", "浴帽大叔"],
+	["CHR_Photo_09", "Polo衫男"],
+	["CHR_Photo_10", "人体艺术"],
+	["CHR_Photo_11", "赤膊男"],
 	["CHR_WARRIOR_01", "战士原型"],
 ]
 

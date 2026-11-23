@@ -2,8 +2,9 @@ extends Node
 ## 当前局内与玩家数据。真正的计算逻辑放 gameplay，这里只存状态。
 
 const VALID_CHARACTER_IDS := [
-	"CHR_PHOTO_07", "CHR_PHOTO_01", "CHR_PHOTO_02", "CHR_PHOTO_03",
-	"CHR_PHOTO_04", "CHR_PHOTO_05", "CHR_PHOTO_06", "CHR_PHOTO_08",
+	"CHR_PHOTO_07", "CHR_DEFAULT_01", "CHR_PHOTO_01", "CHR_PHOTO_02",
+	"CHR_PHOTO_03", "CHR_PHOTO_04", "CHR_PHOTO_05", "CHR_PHOTO_06",
+	"CHR_PHOTO_08", "CHR_Photo_09", "CHR_Photo_10", "CHR_Photo_11",
 	"CHR_WARRIOR_01",
 ]
 const DEFAULT_CHARACTER_ID := "CHR_PHOTO_07"

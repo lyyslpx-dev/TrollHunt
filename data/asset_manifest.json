@@ -49,11 +49,29 @@
       "height": 1.85,
       "animations": []
     },
-    "CHR_CUSTOM_MALE_01": {
-      "model": "res://assets/models/chr/custom/CHR_CUSTOM_MALE_01.glb",
+    "CHR_DEFAULT_01": {
+      "model": "res://assets/models/chr/photo/CHR_DEFAULT_01.glb",
       "fallback": "capsule",
       "height": 1.8,
-      "animations": []
+      "animations": ["human_000093", "human_000089", "human_000059", "human_000003", "human_000014"]
+    },
+    "CHR_Photo_09": {
+      "model": "res://assets/models/chr/photo/CHR_Photo_09.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": ["human_000093", "human_000089", "human_000059", "human_000003", "human_000014"]
+    },
+    "CHR_Photo_10": {
+      "model": "res://assets/models/chr/photo/CHR_Photo_10.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": ["human_000093", "human_000089", "human_000059", "human_000003", "human_000014"]
+    },
+    "CHR_Photo_11": {
+      "model": "res://assets/models/chr/photo/CHR_Photo_11.glb",
+      "fallback": "capsule",
+      "height": 1.8,
+      "animations": ["human_000093", "human_000089", "human_000059", "human_000003", "human_000014"]
     },
     "CHR_NPC_TELEPORT_01": {
       "model": "res://assets/models/chr/npc/CHR_Npc_Teleport_01.glb",
